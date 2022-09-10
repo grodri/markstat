@@ -1,0 +1,64 @@
+program define markstat
+*! v 2.7 <grodri@princeton.edu> 26oct2016 rev 2june2021
+    if c(version) < 14 {
+        display as error "markstat requires Stata 14 or higher"
+        exit 199
+    }
+    capture noisily _markstat `0'
+    if _rc > 0 _closeAllFiles
+end
+
+._markstat
+._closeAllFiles
+._pandoc
+._runr
+
+mata:
+
+// ---------------------------------------------------------------------------
+//  Tangling
+// ----------
+
+:tangle
+:isIndented
+:startsStata
+:endsStata
+:startsBlock
+:blockCloser
+:endsBlock
+:hasInlineCode
+:tag2tex
+:handleUnderline
+:isStrict
+
+// ---------------------------------------------------------------------------
+//  Weaving
+// ---------
+
+:weave
+:translateLog
+:drawRules
+:removeCommands
+:isMataRules
+:renderLog
+:unify
+:injectCss
+:htmlEncode
+:texify
+
+// ---------------------------------------------------------------------------
+//  Utilities
+// -----------
+
+:startsWith
+:addSuffix
+:fopenwr
+:fputvec
+:splitPath
+:findFile
+:getFolder
+:unzipS5
+:checkRout
+:cleanup
+end
+exit
