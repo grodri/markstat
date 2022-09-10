@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>tabest</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+<style>
+/* CSS for Markstat 2.0 using Pandoc 2.0 */
+body{padding:14px 28px; max-width:45em;}
+body, table {font-family: Helvetica, Arial, Sans-serif; font-size: 14px;}
+h1, h2, h3, h4 {font-weight: normal; color: #3366cc}
+h1 {font-size: 200%;}
+h2 {font-size: 150%;}
+h3 {font-size: 120%;}
+h4 {font-size: 100%; font-weight:bold}
+img.center {display:block; margin-left:auto; margin-right:auto}
+.small{font-size:8pt;}
+a {color: black;}
+a:visited {color: #808080;}
+a.plain {text-decoration:none;}
+a.plain:hover {text-decoration:underline;}
+.em {font-weight:bold;}
+pre, code {font-family: "lucida console", monospace;}
+pre.stata {font-size:13px; line-height:13px;}
+pre {padding:8px; border:1px solid #c0c0c0; border-radius:8px; background-color:#fdfdfd;}
+code {color:#3366cc; background-color:#fafafa;}
+pre code { color:black; background-color:white}
+/* Added for Pandoc */
+figure > img, div.figure > img {display:block; margin:auto}
+figcaption, p.caption {text-align:center; font-weight:bold; color:#3366cc;}
+h1.title {text-align:center; margin-bottom:0}
+p.author, h2.author {font-style:italic; text-align:center;margin-top:4px;margin-bottom:0}
+p.date, h3.date {text-align:center;margin-top:4px; margin-bottom:0}
+/* Tables*/
+table { margin:auto; border-collapse:collapse; }
+table caption { margin-bottom:1ex;}
+td {padding:0 0 0 0} /* override */
+table:not([class]) th { padding:4px 6px } 
+table:not([class]) td { padding:4px 6px } 
+table:not([class]) thead tr:first-child th {border-top:1px solid black; padding-top:6px}
+table:not([class]) thead tr:last-child  th {padding-bottom:6px}
+table:not([class]) tbody tr:first-child td {border-top:1px solid black; padding-top:6px}
+table:not([class]) tbody tr:last-child  td {padding-bottom:6px;}
+table:not([class]) tbody:last-child tr:last-child td {border-bottom:1px solid black;}
+</style>
+</head>
+<body>
+<p>Let us compare the fuel efficiency of foreign and domestic cars before and after adjusting for weight. We use gallons per 100 miles (gphm) as our measure of efficiency because it has a more linear relationship with weight.</p>
+
+<table class="ETable1">
+  <tr class="ETable1_1_x">
+    <td class="ETable1_x_1 ETable1_1_1">
+      <span class="ETable1_1_1_span">
+      &nbsp;
+      </span>
+    </td>
+    <td colspan="2" class="ETable1_x_2 ETable1_1_2">
+      <span class="ETable1_1_2_span">
+      unadj
+      </span>
+    </td>
+    <td colspan="2" class="ETable1_x_4 ETable1_1_4">
+      <span class="ETable1_1_4_span">
+      adjusted
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_2_x">
+    <td class="ETable1_x_1 ETable1_2_1">
+      <span class="ETable1_2_1_span">
+      Car origin
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_2_2">
+      <span class="ETable1_2_2_span">
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_2_3">
+      <span class="ETable1_2_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_2_4">
+      <span class="ETable1_2_4_span">
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_2_5">
+      <span class="ETable1_2_5_span">
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_3_x">
+    <td class="ETable1_x_1 ETable1_3_1">
+      <span class="ETable1_3_1_span">
+      &nbsp;&nbsp;Foreign
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_3_2">
+      <span class="ETable1_3_2_span">
+      -1.005
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_3_3">
+      <span class="ETable1_3_3_span">
+      **
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_3_4">
+      <span class="ETable1_3_4_span">
+      0.622
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_3_5">
+      <span class="ETable1_3_5_span">
+      **
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_4_x">
+    <td class="ETable1_x_1 ETable1_4_1">
+      <span class="ETable1_4_1_span">
+      &nbsp;
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_4_2">
+      <span class="ETable1_4_2_span">
+      (-3.29)
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_4_3">
+      <span class="ETable1_4_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_4_4">
+      <span class="ETable1_4_4_span">
+      (3.11)
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_4_5">
+      <span class="ETable1_4_5_span">
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_5_x">
+    <td class="ETable1_x_1 ETable1_5_1">
+      <span class="ETable1_5_1_span">
+      Weight (lbs.)
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_5_2">
+      <span class="ETable1_5_2_span">
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_5_3">
+      <span class="ETable1_5_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_5_4">
+      <span class="ETable1_5_4_span">
+      0.002
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_5_5">
+      <span class="ETable1_5_5_span">
+      **
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_6_x">
+    <td class="ETable1_x_1 ETable1_6_1">
+      <span class="ETable1_6_1_span">
+      &nbsp;
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_6_2">
+      <span class="ETable1_6_2_span">
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_6_3">
+      <span class="ETable1_6_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_6_4">
+      <span class="ETable1_6_4_span">
+      (13.74)
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_6_5">
+      <span class="ETable1_6_5_span">
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_7_x">
+    <td class="ETable1_x_1 ETable1_7_1">
+      <span class="ETable1_7_1_span">
+      Intercept
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_7_2">
+      <span class="ETable1_7_2_span">
+      5.318
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_7_3">
+      <span class="ETable1_7_3_span">
+      **
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_7_4">
+      <span class="ETable1_7_4_span">
+      -0.073
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_7_5">
+      <span class="ETable1_7_5_span">
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_8_x">
+    <td class="ETable1_x_1 ETable1_8_1">
+      <span class="ETable1_8_1_span">
+      &nbsp;
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_8_2">
+      <span class="ETable1_8_2_span">
+      (31.92)
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_8_3">
+      <span class="ETable1_8_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_8_4">
+      <span class="ETable1_8_4_span">
+      (-0.18)
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_8_5">
+      <span class="ETable1_8_5_span">
+      </span>
+    </td>
+  </tr>
+  <tr class="ETable1_9_x">
+    <td class="ETable1_x_1 ETable1_9_1">
+      <span class="ETable1_9_1_span">
+      Number of observations
+      </span>
+    </td>
+    <td class="ETable1_x_2 ETable1_9_2">
+      <span class="ETable1_9_2_span">
+      74
+      </span>
+    </td>
+    <td class="ETable1_x_3 ETable1_9_3">
+      <span class="ETable1_9_3_span">
+      </span>
+    </td>
+    <td class="ETable1_x_4 ETable1_9_4">
+      <span class="ETable1_9_4_span">
+      74
+      </span>
+    </td>
+    <td class="ETable1_x_5 ETable1_9_5">
+      <span class="ETable1_9_5_span">
+      </span>
+    </td>
+  </tr>
+</table>
+<p class="ETable_notes">
+** p<.01, * p<.05
+</p>
+<style>
+
+table {
+  border-collapse: collapse;
+}
+
+.ETable1_1_x {
+}
+
+.ETable1_2_x {
+}
+
+.ETable1_3_x {
+}
+
+.ETable1_4_x {
+}
+
+.ETable1_5_x {
+}
+
+.ETable1_6_x {
+}
+
+.ETable1_7_x {
+}
+
+.ETable1_8_x {
+}
+
+.ETable1_9_x {
+}
+
+.ETable1_x_1 {
+}
+
+.ETable1_x_2 {
+}
+
+.ETable1_x_3 {
+}
+
+.ETable1_x_4 {
+}
+
+.ETable1_x_5 {
+}
+
+.ETable1_1_1 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_1_1_span {
+}
+
+.ETable1_1_2 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.ETable1_1_2_span {
+}
+
+.ETable1_1_3 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.ETable1_1_3_span {
+}
+
+.ETable1_1_4 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.ETable1_1_4_span {
+}
+
+.ETable1_1_5 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.ETable1_1_5_span {
+}
+
+.ETable1_2_1 {
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_2_1_span {
+}
+
+.ETable1_2_2 {
+  padding-left: 10pt;
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_2_2_span {
+}
+
+.ETable1_2_3 {
+  padding-left: 10pt;
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_2_3_span {
+}
+
+.ETable1_2_4 {
+  padding-left: 10pt;
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_2_4_span {
+}
+
+.ETable1_2_5 {
+  padding-left: 10pt;
+  border-top-width: 0.5pt;
+  border-top-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_2_5_span {
+}
+
+.ETable1_3_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_3_1_span {
+}
+
+.ETable1_3_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_3_2_span {
+}
+
+.ETable1_3_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_3_3_span {
+}
+
+.ETable1_3_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_3_4_span {
+}
+
+.ETable1_3_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_3_5_span {
+}
+
+.ETable1_4_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_4_1_span {
+}
+
+.ETable1_4_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_4_2_span {
+}
+
+.ETable1_4_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_4_3_span {
+}
+
+.ETable1_4_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_4_4_span {
+}
+
+.ETable1_4_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_4_5_span {
+}
+
+.ETable1_5_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_5_1_span {
+}
+
+.ETable1_5_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_5_2_span {
+}
+
+.ETable1_5_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_5_3_span {
+}
+
+.ETable1_5_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_5_4_span {
+}
+
+.ETable1_5_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_5_5_span {
+}
+
+.ETable1_6_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_6_1_span {
+}
+
+.ETable1_6_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_6_2_span {
+}
+
+.ETable1_6_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_6_3_span {
+}
+
+.ETable1_6_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_6_4_span {
+}
+
+.ETable1_6_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_6_5_span {
+}
+
+.ETable1_7_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_7_1_span {
+}
+
+.ETable1_7_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_7_2_span {
+}
+
+.ETable1_7_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_7_3_span {
+}
+
+.ETable1_7_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_7_4_span {
+}
+
+.ETable1_7_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_7_5_span {
+}
+
+.ETable1_8_1 {
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_8_1_span {
+}
+
+.ETable1_8_2 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_8_2_span {
+}
+
+.ETable1_8_3 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_8_3_span {
+}
+
+.ETable1_8_4 {
+  padding-left: 10pt;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_8_4_span {
+}
+
+.ETable1_8_5 {
+  padding-left: 10pt;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_8_5_span {
+}
+
+.ETable1_9_1 {
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_9_1_span {
+}
+
+.ETable1_9_2 {
+  padding-left: 10pt;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_9_2_span {
+}
+
+.ETable1_9_3 {
+  padding-left: 10pt;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_9_3_span {
+}
+
+.ETable1_9_4 {
+  padding-left: 10pt;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.ETable1_9_4_span {
+}
+
+.ETable1_9_5 {
+  padding-left: 10pt;
+  border-bottom-width: 0.5pt;
+  border-bottom-style: solid;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.ETable1_9_5_span {
+}
+
+
+.ETable_notes {
+}
+</style>
+<p>Foreign cars on average use one gallon less than domestic cars to travel 100 miles, but when we compare cars with the same weight they use 0.62 gallons more.</p>
+</body>
+</html>

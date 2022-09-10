@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h1 id="the-stata-tutorial">The Stata Tutorial</h1>
+
+<p>In July of 2017 I updated the <em>Stata Tutorial</em> for version 15, and it
+seemed a good time to convert it to a Stata Markdown script to be
+processed with <code class="language-plaintext highlighter-rouge">markstat</code>. In September of 2019 I updated it again, this
+time for version 16. A big advantage of using <code class="language-plaintext highlighter-rouge">markstat</code> is that it was
+very easy to update the tutorial, and I could generate a PDF file via
+LaTeX from the same script used for HTML.</p>
+
+<p>The links below provide access to the <code class="language-plaintext highlighter-rouge">markstat</code> script, the 
+bibliography file, and an ancillary file used for PDF output as
+explained below. 
+The published HTML and PDF files are also linked below.</p>
+
+<ul>
+  <li><a href="stataTutorial.stmd">Markstat</a></li>
+  <li><a href="stataTutorial.bib">bibliography</a></li>
+  <li>
+    <p><a href="tweaks.tex">tweaks</a></p>
+  </li>
+  <li><a href="https://data.princeton.edu/stata">HTML</a></li>
+  <li><a href="https://data.princeton.edu/stata/tutorial.pdf">PDF</a></li>
+</ul>
+
+<p>If you are interested in running the script yourself, note that you need 
+to have  the file <code class="language-plaintext highlighter-rouge">_gpnupt.ado</code> available in the working directory or
+your personal ado folder, as it is used in one of the examples. 
+The file can be downloaded <a href="_gpnupt.ado">here</a> or copied and
+pasted from Section 4.3.6 of the tutorial. 
+To generate PDF you will also need the file <code class="language-plaintext highlighter-rouge">tweaks.tex</code> to
+match the style I used. The following notes may also be of interest
+in reproducing the output.</p>
+
+<h2 id="the-input-script">The Input Script</h2>
+
+<p>In the source script I used the simple "one tab or four spaces" rule
+to indent code that should be run through Stata. To list code that is
+not to be run through Stata, for example to explain the syntax of a
+<code class="language-plaintext highlighter-rouge">while</code> loop, I used code fences as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+while condition {
+    ... do something ...
+}
+```
+</code></pre></div></div>
+
+<p>The code is rendered in HTML as a preformatted block, and in LaTeX as a
+<code class="language-plaintext highlighter-rouge">verbatim</code> environment.</p>
+
+<p>You will also note that I coded graphs using a caption-less figure, as
+in</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![](scatter.png){.img-responsive .center-block}
+</code></pre></div></div>
+
+<p>The website uses the Bootstrap framework, and the two classes,
+<code class="language-plaintext highlighter-rouge">img-responsive</code> and <code class="language-plaintext highlighter-rouge">center-block</code> ensure that the figure is centered
+and displays well in devices of varying sizes. One exception is an image
+used to highlight version 16, where I used an <code class="language-plaintext highlighter-rouge">img</code> tag so it appears
+only in the HTML version. Another is the screen capture of the Stata
+interface, which I coded so it would appear in natural size in HTML and
+using the full page width in LaTeX, by coding</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;img src="stata16.png" class="img-responsive center-block"/&gt;
+\includegraphics[width=\linewidth]{stata16.png}
+</code></pre></div></div>
+
+<p>This takes advantage of the fact that Pandoc will pass along HTML and
+LaTeX code to the appropriate target format and ignore it otherwise.</p>
+
+<p>I also collected all the bibliographic references in a BibTeX file, and
+cited them all using the <code class="language-plaintext highlighter-rouge">nocite</code> convention. The YAML block listed
+further below references the bibliography file and has a literal
+"nocite" field.</p>
+
+<p>To publish the HTML to my website I split it into four files, one per
+section, adjusting the links.</p>
+
+<h2 id="tweaking-latex">Tweaking LaTeX</h2>
+
+<p>I used caption-less figures because they appear nicely centered in the
+HTML output, but unfortunately LaTeX will add a figure number to the
+otherwise empty caption. This is easily avoided however, using the LaTeX
+command <code class="language-plaintext highlighter-rouge">\usepackage[labelformat=empty]{caption}</code>, which adds the
+<code class="language-plaintext highlighter-rouge">caption</code> package with an option to supress labels. This is the only
+required tweak, and is easily added as part of the YAML block, but I
+decided to add a few more and collect them in a file called
+<code class="language-plaintext highlighter-rouge">tweaks.tex</code>. The YAML block used then reads</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+title: Stata Tutorial 
+author: Germán Rodríguez
+date: September 2019
+header-includes:
+  - \input{tweaks.tex}
+bibliography: tutorial.bib
+nocite: |
+ @*
+---
+</code></pre></div></div>
+
+<p>If you list the <code class="language-plaintext highlighter-rouge">tweaks.tex</code> file you will see that it uses</p>
+
+<ul>
+  <li>
+    <p>the <code class="language-plaintext highlighter-rouge">caption</code> package to supress figure numbers as noted above,</p>
+  </li>
+  <li>
+    <p>the <code class="language-plaintext highlighter-rouge">titling</code> package to modify rendering the title and author. I
+wanted to use a large bold sans serif font and include a subtitle
+and the URL of the tutorial. I also wanted to add my affiliation to
+the author field.</p>
+  </li>
+  <li>
+    <p>the <code class="language-plaintext highlighter-rouge">sectsty</code> package to modify the fonts used in all the section
+titles (including subsections, subsubsections, paragraphs and
+subparagraphs), using bold sans serif fonts of appropriate sizes.</p>
+  </li>
+  <li>
+    <p>the <code class="language-plaintext highlighter-rouge">fancyvrb</code> package to modify <code class="language-plaintext highlighter-rouge">verbatim</code> blocks so they match
+exactly the <code class="language-plaintext highlighter-rouge">stlog</code> environments used for Stata output.</p>
+  </li>
+</ul>
+
+<p>These are just aesthetic changes that do not affect the content of the
+tutorial, but allow you to reproduce exactly the published file by
+simply typing <code class="language-plaintext highlighter-rouge">markstat using stataTutorial, pdf bib</code>.</p>
+
+<p>Something else you may toy with when generating a PDF document is page
+breaks. Having looked at the document, however, I decided that the few
+cases where code or output was split across pages were alright and
+decided to let them be.</p>
+
+<p><em>Note</em>. The <em>Stata Tutorial</em> was first published in 2006 and targeted
+version 9, which makes the current version the 8th edition.</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

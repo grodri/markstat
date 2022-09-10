@@ -1,0 +1,62 @@
+
+<h2>Estimates</h2>
+
+<p>The next example shows how to use Jann's <code>esttab</code> command in
+conjunction with <code>markstat</code> to generate a nice table of estimates.
+The code below fits two models to the fuel efficiency data and then compares
+them side-by-side.  We use the strict syntax and supress command echoing to
+produce a dynamic report. Here is the input:
+
+<div style="text-align:right"><code>estimates.stmd</code></div>
+<pre class="stata">
+A Table of Estimates
+--------------------
+
+The table below shows estimated differences in fuel efficiency between
+foreign and domestic cars with and without adjustment for weight, using
+gallons per 100 miles as the outcome.
+
+```s/
+    quietly sysuse auto
+    quietly gen gphm = 100/mpg
+    eststo clear
+    quietly eststo: regress gphm foreign
+    quietly eststo: regress gphm foreign weight
+    esttab
+```
+
+We see that on average foreign cars are more economical, but
+if we adjust for weight they are less fuel efficient, using
+`s %3.1f _b[foreign]` gallons *more* instead of one gallon
+*less* per 100 miles.
+
+</pre>
+
+<p>And this is how this is rendered by the command <code>markstat using estimates, strict</code>.
+Don't forget to specify the <code>strict</code> option.</p>
+
+<div style="text-align:right; border-bottom:1px solid #c0c0c0; margin-bottom:17px;"><code>estimates.html</code></div>
+<h2 id="a-table-of-estimates">A Table of Estimates</h2>
+<p>The table below shows estimated differences in fuel efficiency between foreign and domestic cars with and without adjustment for weight, using gallons per 100 miles as the outcome.</p>
+<pre class='stata'>────────────────────────────────────────────
+                      (1)             (2)   
+                     gphm            gphm   
+────────────────────────────────────────────
+foreign            -1.005**         0.622** 
+                  (-3.29)          (3.11)   
+
+weight                            0.00163***
+                                  (13.74)   
+
+_cons               5.318***      -0.0735   
+                  (31.92)         (-0.18)   
+────────────────────────────────────────────
+N                      74              74   
+────────────────────────────────────────────
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+</pre>
+<p>We see that on average foreign cars are more economical, but if we adjust for weight they are less fuel efficient, using 0.6 gallons <em>more</em> instead of one gallon <em>less</em> per 100 miles.</p>
+
+<div style="border-bottom:1px solid #c0c0c0; margin-bottom:17px;">&nbsp;</div>
+

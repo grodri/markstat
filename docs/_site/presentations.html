@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h1 id="presentations">Dynamic Presentations</h1>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> 2.0 leverages the amazing Pandoc to support presentations in
+HTML using the S5 engine, or in PDF via LaTeX using Beamer. Here is a
+simple four-slide example. It starts with metadata to define the title,
+author and date, which are used to generate a title slide. Each heading
+at level 1 then defines a slide. The rest is pretty self-explanatory.</p>
+
+<div class="text-end"><code>deck.stmd</code></div>
+<pre>
+% Dynamic Presentations with Stata and Markdown
+% Germán Rodríguez, Princeton University
+% 7 November 2017
+
+# Bullet Points
+
+You presentation will usually include bullet points:
+
+ + Estimation methods
+
+ + Stata output
+    
+ + Stata graphs
+
+ These can be shown incrementally.
+ 
+ The same script can generate an HTML presentation using
+ the S5 engine, or PDF slides via LaTeX using Beamer.
+    
+# Stata Output {.fragile}
+
+Here's the proverbial fuel efficiency dataset:
+
+    sysuse auto, clear
+    gen gphm = 100/mpg
+    quietly reg gphm weight
+    _coef_table
+
+So a car that weights 1,000 pounds more than another will need on average
+`s %5.1f 1000*_b[weight]` more gallons to travel 100 miles.
+
+# Stata Graphs {.fragile}
+
+Using gallons per 100 miles leads to a more linear relationship
+
+    twoway scatter gphm weight || lfit gphm weight, ///
+        legend(off) ytitle(Gallons per 100 miles)
+    quietly graph export gphm.png, width(800) replace
+
+![Fuel Efficiency by Weight](gphm.png){width="55%"}
+
+# Notes on Features
+
+This example uses the simple syntax, with Stata code indented one tab
+or four spaces. 
+
+If you get carried away with nested lists, or wish to hide code, you
+can use the strict syntax.
+
+As usual, you can include math formulas and/or bibliographic references.
+
+The fragile attribute is used to keep Beamer happy with verbatim blocks,
+and is ignored in HTML
+
+A `nodo` option let's you tweak the narrative or change engines and/or themes 
+without having to rerun the Stata code, an idea from Ben Jann's `texdoc`.
+
+</pre>
+
+<p>Save the script as <code class="language-plaintext highlighter-rouge">deck.stmd</code> in the current working directory. Or
+download the script from this website using the Stata command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>copy https://grodri.github.io/markstat/deck.stmd .
+</code></pre></div></div>
+
+<p>Issuing the command <code class="language-plaintext highlighter-rouge">markstat using deck, slides</code> will produce the HTML
+presentation using the S5 engine <a href="s5.html">shown here</a>.
+Changing the option to <code class="language-plaintext highlighter-rouge">slides(santiago)</code> uses the new Santiago theme
+instead, as <a href="santiago.html">shown here</a>. This theme works
+better with multi-part presentations. In both cases, adding the <code class="language-plaintext highlighter-rouge">bundle</code>
+option results in a self-contained presentation that includes all
+images, css and JavaScript files. Here are the title pages for both
+themes:</p>
+
+<div class="container mb-3">
+  <div class="row justify-content-start">
+    <div class="col-6">
+      <img src="s5-snip.png" /><br />S5 Default
+    </div>
+    <div class="col-6">
+      <img src="santiago-snip.png" /><br />S5 Santiago
+    </div>
+  </div>
+</div>
+
+<p>S5 slides also have a printer-friendly outline mode, that you can reach
+by hovering on the bottom right for the default theme, top right for the
+Santiago theme, and clicking on
+<span style="color:#3333B3; font-size:18px; font-weight:bold">[∅]</span>. 
+You will also see navigation arrows and a combo box to jump directly to 
+any given slide.</p>
+
+<p>Is you have a LaTeX installation you can issue the command
+<code class="language-plaintext highlighter-rouge">markstat using deck, beamer</code> to generate a Beamer presentation using
+the default theme, as <a href="beamer.pdf">shown here</a>. 
+Change the option to <code class="language-plaintext highlighter-rouge">beamer(madrid)</code> to use the Madrid theme, with 
+the results <a href="madrid.pdf">shown here</a>. You can use any of the many
+Beamer themes available. A nice theme gallery may be <a href="https://deic.uab.es/~iblanes/beamer_gallery/">found
+here</a>. Here are the title
+pages for both themes:</p>
+
+<div class="container mb-3">
+  <div class="row justify-content-start">
+    <div class="col-6">
+      <img src="beamer-snip.png" /><br />Beamer Default
+    </div>
+    <div class="col-6">
+      <img src="madrid-snip.png" /><br />Beamer Madrid
+    </div>
+  </div>
+</div>
+
+<p>Tinkering with engines and/or themes is facilitated by the <code class="language-plaintext highlighter-rouge">nodo</code>
+option, which lets you change the narrative or the style of the
+presentation, without having to rerun the Stata code generating the
+images and tables.</p>
+
+<p>For best results I recommend you install the latest version of Pandoc,
+available at
+<a href="https://pandoc.org/installing.html">pandoc.org/installing.html</a>. The
+examples linked here were first ran with <code class="language-plaintext highlighter-rouge">markstat</code> 2.0.1 using Pandoc
+2.0.1.1. 
+For another example see <a href="twoColumnSlides">two-column slides</a>.</p>
+
+<p>Note: You may wonder how I produced four files with different names
+from the same script, when <code class="language-plaintext highlighter-rouge">markstat</code> uses the name of the script for
+all output files. 
+A simple hack: after each run I copied the output file, for example 
+<code class="language-plaintext highlighter-rouge">copy deck.html santiago.html</code>, or <code class="language-plaintext highlighter-rouge">copy deck.pdf madrid.pdf</code>.</p>
+
+<p>New in <code class="language-plaintext highlighter-rouge">markstat</code> 2.0</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<style>
+a.example {font-size: 1.25rem; color:#333; text-decoration:none;}
+a.example:visited {color#333;} 
+</style>
+
+<!-- 
+Solution for name conflicts: keep the page name, as these are more likely
+to be linked, and change the script and therefore output file names.
+-->
+
+<p>Here is a collection of examples illustrating a number of <code class="language-plaintext highlighter-rouge">markstat</code> features.
+Each example comes with a script that you can download and run on your computer.</p>
+
+<p><a class="example" href="simpleScript">A Simple Script.</a> 
+A very simple script that reads a Stata system file, draws a graph and runs
+a regression.</p>
+
+<p><a class="example" href="bundledImages">Bundled Images.</a> 
+Illustrating the <code class="language-plaintext highlighter-rouge">bundle</code> option that includes all images in base64 encoding,
+making the page self-contained.</p>
+
+<p><a class="example" href="metadata">Using Metadata.</a> 
+A basic illustration of the two formats for including title, author and date
+information in your document.</p>
+
+<p><a class="example" href="tables">Dynamic Tables.</a>
+Where we show how to combine Pandoc pipe tables with <code class="language-plaintext highlighter-rouge">markstat</code> inline code
+to produce reports that include dynamic tables.</p>
+
+<p><a class="example" href="estimates">Tables of Estimates.</a> 
+An example using Ben Jann’s <code class="language-plaintext highlighter-rouge">esttab</code> command with <code class="language-plaintext highlighter-rouge">markstat</code> to generate a
+nice table of estimates</p>
+
+<p><a class="example" href="tabout">Tables of Statistics.</a> 
+Ian Watson’s <code class="language-plaintext highlighter-rouge">tabout</code> command can produce beautiful frequency tables and
+tables of summary statistics in LaTeX or HTML</p>
+
+<p><a class="example" href="wfsx">A Research Article.</a> 
+The first published paper written completely with <code class="language-plaintext highlighter-rouge">markstat</code>, published
+in <em>Demographic Research</em> on March 22, 2017.</p>
+
+<p><a class="example" href="mataMatters">Mata Matters.</a> 
+Introduces the use of Mata code blocks in <code class="language-plaintext highlighter-rouge">markstat</code>, by reproducing part 
+of one of Bill Gould’s <em>Mata Matters</em> columns.</p>
+
+<p><a class="example" href="citations">Bibliographic Citations.</a> 
+Thanks to the amazing Pandoc, <code class="language-plaintext highlighter-rouge">markstat</code> supports bibliographic references
+and citations, using many styles.</p>
+
+<p><a class="example" href="markstat">The Markstat Paper.</a> 
+The article introducing <code class="language-plaintext highlighter-rouge">markstat</code>, written of course using Markdown and
+Stata with <code class="language-plaintext highlighter-rouge">markstat</code>, updated to use the <u>bib</u>liography option.</p>
+
+<p><a class="example" href="tutorial">The Stata Tutorial.</a> 
+The <em>Stata Tutorial</em>, which I converted to <code class="language-plaintext highlighter-rouge">markstat</code> for Stata version 15 
+in 2017 and updated to cover version 16 in 2019.</p>
+
+<p><a class="example" href="docx">Dynamic Word Documents.</a> 
+Starting with version 2.0, <code class="language-plaintext highlighter-rouge">markstat</code> can generate Word documents from the
+same script used to produce HTML and PDF.</p>
+
+<p><a class="example" href="presentations">Dynamic Presentations.</a> 
+<code class="language-plaintext highlighter-rouge">markstat</code> leverages the amazing Pandoc to support presentations
+in HTML with the S5 engine or in LaTeX using Beamer.</p>
+
+<p><a class="example" href="twoColumnSlides">Two-Column Slides.</a> 
+When Pandoc added support for columns we were able to produce slides
+that show code and graphs side-by-side.</p>
+
+<p><a class="example" href="quantiles">Quantiles in Stata and R.</a> 
+<code class="language-plaintext highlighter-rouge">markstat</code> 2.1 and higher lets you combine Stata, Mata and R code,
+which we illustrate showing how Stata and R use different defaults
+when calculating quantiles.</p>
+
+<p><a class="example" href="stata-r-tabs">Stata and R Tabs with Bootstrap.</a> 
+My computing handouts often show how to do things in Stata and R, 
+so students have a choice of software. Here I show how to use
+Bootstrap tabs to select Stata and R versions of a page.</p>
+
+<p><a class="example" href="crossref">Cross-references in LaTeX.</a> 
+Where I expand on a Stata Forum question on cross-references, 
+showing a solution that works with LaTeX, with a note on ongoing 
+work on other output formats.</p>
+
+<p><a class="example" href="collectionTables">Collection Tables.</a>
+Stata 17 introduced a system for producing highly-customizable 
+publication-quality tables. Here we show two examples incorporating 
+such tables in <code class="language-plaintext highlighter-rouge">markstat</code> documents.</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

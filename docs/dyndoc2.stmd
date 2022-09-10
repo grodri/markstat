@@ -1,0 +1,30 @@
+Stata Markdown
+==============
+
+Let us read the fuel efficiency data that is shipped with Stata
+
+    sysuse auto, clear
+
+To study how fuel efficiency depends on weight it is useful to
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"
+
+    gen gphm = 100/mpg
+
+We then obtain a more linear relationship
+
+    twoway scatter gphm weight || lfit gphm weight ///
+        , ytitle(Gallons per Mile) legend(off)
+    graph export auto.png, width(500) replace
+
+![Fuel Efficiency](auto.png)
+
+The regression equation estimated by OLS is
+
+    regress gphm weight
+	
+Thus, a car that weighs 1,000 lbs more than another requires on
+average an extra `s %5.1f 1000*_b[weight]` gallons to travel 
+100 miles.
+
+That's all for now!

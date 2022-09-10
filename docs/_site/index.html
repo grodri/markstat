@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<div class="lead mb-3 ml-3 pl-3">
+ The <code>markstat</code> command lets you combine <u>Mark</u>down
+annotations with <u>Stat</u>a commands to produce dynamic documents and
+presentations.
+</div>
+<!--</div>-->
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+    <a class="nav-link active" data-bs-toggle="tab" aria-current="page" href="#documents">Documents</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="tab" href="#presentations">Presentations</a>
+    </li>      
+</ul>
+<p></p>
+
+<div class="tab-content">
+<div class="tab-pane active" id="documents">
+
+    <p><img src="markstat2docs.png" width="768px" class="img-fluid" /></p>
+
+    <p>Use Stata’s code editor to write a script as shown above center,
+and then generate the web page on the left, the PDF document on the
+top right, or the Word document on the bottom right, all from the same
+script! You can view the script <a href="simpleScript">on this page</a>,
+where you will also find links to the resulting web page, PDF file and
+Work document.</p>
+
+  </div>
+
+<div class="tab-pane" id="presentations">
+
+    <p><img src="markstat2slides.png" width="768px" class="img-fluid" /></p>
+
+    <p>The script on the left shows a slide show, which is rendered 
+on the right using HTML with the S5 engine at the top 
+(showing the default Spiral and Santiago themes), 
+and using  PDF via Beamer at the bottom 
+(showing the default and Madrid themes).
+You can view the script <a href="presentations">on this page</a>, where you
+will also find links to the presentations.</p>
+
+  </div>
+</div>
+
+<hr class="mt-2" />
+
+<p>In this website you will find detailed information on how to 
+create documents that combine Markdown with Stata, including tips
+on <a href="gettingStarted">getting started</a>, the <a href="documentation">documentation</a> 
+of the command, and more than twenty <a href="examples">examples</a>.
+Stata 15 introduced support for Markdown and dynamic documents. A
+comparison of the official commands with <code class="language-plaintext highlighter-rouge">markstat</code> may be found
+<a href="stata15">here</a>.</p>
+
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

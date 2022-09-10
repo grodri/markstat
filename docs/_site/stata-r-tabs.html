@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="stata-and-r-tabs-with-bootstrap">Stata and R Tabs with Bootstrap</h2>
+
+<p>When I prepare computer logs for my statistics courses, I usually
+show how to do things in Stata and R, so students have a choice of 
+software. With the latest additions to <code class="language-plaintext highlighter-rouge">markstat</code>, I can now do this
+much more easily.</p>
+
+<p>Here I have revisited a page describing Cox regression models. The links
+below show the script and the resulting page, but you may want to read
+the explanation first.</p>
+
+<ul>
+  <li><a href="cox.stmd">Markstat</a></li>
+  <li><a href="cox.html">HTML</a></li>
+</ul>
+
+<h2 id="header-includes">Header Includes</h2>
+
+<p>The first thing to notice is that I use the Bootstrap framework. The
+easiest way to do this is to use “header-includes” to link to the
+necessary CSS and JavaScript files from a content distribution network
+(CDN). That’s why the script starts with</p>
+
+<pre>
+---
+title: Cox Regression
+author: Germán Rodríguez
+date: 12 December 2017
+header-includes:
+ - &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/&gt;
+ - &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
+ - &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"&gt;&lt;/script&gt;
+---
+</pre>
+
+<h2 id="bootstrap-tabs">Bootstrap Tabs</h2>
+
+<p>The main use of the framework is to use tabs to show Stata and R
+versions of the page. This is actually quite easy to do. Before the very
+first bit of code, include the following HTML</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ul class="nav nav-tabs"&gt;
+&lt;li class="active"&gt;&lt;a data-toggle="tab" href="#stata"&gt;Stata&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a data-toggle="tab" href="#r"&gt;&amp;nbsp; R &amp;nbsp;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;/p&gt;   
+</code></pre></div></div>
+
+<p>Then, of course, you need to provide some code to switch from one
+language to the other. Simply include the following JavaScript at the
+end of your page</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script&gt;
+$(function () {
+    $(".r").hide();
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var href = $(e.target).attr("href")
+        var language = href.substr(1);
+        var other = language == 'r' ? 'stata' : 'r';
+        $("." + other).hide();
+        $("." + language).show();
+    });
+})
+&lt;/script&gt;
+</code></pre></div></div>
+
+<p>I just lifted these two fragments from a course page, where they have
+been in use for a long time. The only change is the use of <code class="language-plaintext highlighter-rouge">stata</code> and
+<code class="language-plaintext highlighter-rouge">r</code> classes here. These bits can be saved in separate files and injected
+using <code class="language-plaintext highlighter-rouge">.include</code>. This is all you need for the tabs to work.</p>
+
+<h2 id="text">Text</h2>
+
+<p>Sometimes, however, we need to include language-specific text. This we
+obtain for free if we simply assign the class <code class="language-plaintext highlighter-rouge">r</code> or <code class="language-plaintext highlighter-rouge">stata</code> to text
+that should appear only for that language, for example after fitting a
+proportional hazards model I note</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Stata reports hazard ratios unless you specify the option `nohr`.]{.stata}
+[R reports log-relative risks, but also exponentiates the coefficients to obtain
+hazard ratios.]{.r}
+</code></pre></div></div>
+
+<p>This provides the right description for each language. The script also
+has a <code class="language-plaintext highlighter-rouge">div</code> discussing <code class="language-plaintext highlighter-rouge">tvc()</code> and <code class="language-plaintext highlighter-rouge">tvexp()</code>, which of course applies
+only to Stata.</p>
+
+<h2 id="figures">Figures</h2>
+
+<p>This trick also works for images. If you want to include a Stata graph
+just add the <code class="language-plaintext highlighter-rouge">stata</code> class to the image. Do the same for R. I usually
+just add an <code class="language-plaintext highlighter-rouge">r</code> to the name of an R plot. For example the main
+Cox-Kaplan-Meier plot is called <code class="language-plaintext highlighter-rouge">coxkm.png</code> in the Stata version and
+<code class="language-plaintext highlighter-rouge">coxkmr.png</code> in the R version. To show these I coded</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![](coxkm.png){width="5in" .stata}
+![](coxkmr.png){width="5in" .r}
+</code></pre></div></div>
+
+<p>Each plot will show only when the corresponding tab is selected.</p>
+
+<p>If an image is in a paragraph by itself and has a caption, Pandoc will
+wrap it in <code class="language-plaintext highlighter-rouge">&lt;figure&gt;</code> tags and add a <code class="language-plaintext highlighter-rouge">&lt;figcaption&gt;</code>. To ensure that all
+elements are shown or hidden you need to wrap the image using colon
+fences and assign the language class to that:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:::{.stata}
+![An Implicit Figure](coxkm.png){width="5in"}
+:::
+</code></pre></div></div>
+
+<p>I did not use this technique in this example, as none of the images have
+Markdown captions. Instead, I added a CSS rule so all images would be
+centered.</p>
+
+<p>By the way, if you are wondering how I got the Stata plots to look like
+R's <code class="language-plaintext highlighter-rouge">ggplot2</code>, read about the <code class="language-plaintext highlighter-rouge">plottig</code> scheme in the <em>Stata Journal</em>
+17-3 or type <code class="language-plaintext highlighter-rouge">search plottig</code>. And if you are wondering how I got
+generic grid plots in R to look somewhat like <code class="language-plaintext highlighter-rouge">ggplot2</code>, look at the
+<code class="language-plaintext highlighter-rouge">ggfy()</code> function in a quiet R block near the top of the script.</p>
+
+<p>That's it, really. Follow the links at the top to see the script and
+the resulting web page, which differs from the "official" page only on
+the surrounding "chrome".</p>
+
+<p>New in <code class="language-plaintext highlighter-rouge">markstat</code> 2.1</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

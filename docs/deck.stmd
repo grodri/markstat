@@ -1,0 +1,56 @@
+% Dynamic Presentations with Stata and Markdown
+% Germán Rodríguez, Princeton University
+% 7 November 2017
+
+# Bullet Points
+
+You presentation will usually include bullet points:
+
+ + Estimation methods
+
+ + Stata output
+    
+ + Stata graphs
+
+ These can be shown incrementally.
+ 
+ The same script can generate an HTML presentation using
+ the S5 engine, or PDF slides via LaTeX using Beamer.
+    
+# Stata Output {.fragile}
+
+Here's the proverbial fuel efficiency dataset:
+
+    sysuse auto, clear
+    gen gphm = 100/mpg
+    quietly reg gphm weight
+    _coef_table
+
+So a car that weights 1,000 pounds more than another will need on average
+`s %5.1f 1000*_b[weight]` more gallons to travel 100 miles.
+
+# Stata Graphs {.fragile}
+
+Using gallons per 100 miles leads to a more linear relationship
+
+    twoway scatter gphm weight || lfit gphm weight, ///
+        legend(off) ytitle(Gallons per 100 miles)
+    quietly graph export gphm.png, width(800) replace
+
+![Fuel Efficiency by Weight](gphm.png){width="55%"}
+
+# Notes on Features
+
+This example uses the simple syntax, with Stata code indented one tab
+or four spaces. 
+
+If you get carried away with nested lists, or wish to hide code, you
+can use the strict syntax.
+
+As usual, you can include math formulas and/or bibliographic references.
+
+The fragile attribute is used to keep Beamer happy with verbatim blocks,
+and is ignored in HTML
+
+A `nodo` option let's you tweak the narrative or change engines and/or themes 
+without having to rerun the Stata code, an idea from Ben Jann's `texdoc`.

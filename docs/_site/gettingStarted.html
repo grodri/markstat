@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<p>To get started we need a couple of commands and some external tools.</p>
+
+<h2 id="stata">Stata</h2>
+
+<p>1. The <code class="language-plaintext highlighter-rouge">markstat</code> command is available from the Statistical Software
+Components (SSC) archive. To install from net-aware Stata type</p>
+
+<p><code class="language-plaintext highlighter-rouge">ssc install markstat</code></p>
+
+<p>If you have installed an earlier version type
+<code class="language-plaintext highlighter-rouge">ssc install markstat, replace</code> to update. (If you installed an
+experimental version please type <code class="language-plaintext highlighter-rouge">ado uninstall markstat</code> first.)</p>
+
+<p>2. You also need the <code class="language-plaintext highlighter-rouge">whereis</code> command, which is also available from the
+SSC archive, type</p>
+
+<p><code class="language-plaintext highlighter-rouge">ssc install whereis</code></p>
+
+<p>Both commands come with help files.</p>
+
+<h2 id="pandoc">Pandoc</h2>
+
+<p>1. To convert Markdown to HTML, PDF or DOCX we use an external document
+converter called <strong>pandoc</strong>. I find that it works very well and is easy
+to install, with binaries for Linux, Mac and Windows.</p>
+
+<p>Please visit <a href="https://pandoc.org/installing">pandoc.org/installing</a> to
+download and install the program. Make sure you make a note of where it
+was installed.</p>
+
+<p>2. Then run the <code class="language-plaintext highlighter-rouge">whereis</code> command in Stata with the location. For
+example on a Windows system where Pandoc was installed for all users, I
+typed</p>
+
+<p><code class="language-plaintext highlighter-rouge">whereis pandoc "c:\program files (x86)\pandoc\pandoc.exe"</code></p>
+
+<p>The file path is in quotes because it includes spaces. On a Mac I typed</p>
+
+<p><code class="language-plaintext highlighter-rouge">whereis pandoc /usr/local/bin/pandoc</code></p>
+
+<p>But of course the location may be different in your system. If you have
+trouble finding a file type <code class="language-plaintext highlighter-rouge">help whereis</code> and check out the User Tips
+section.</p>
+
+<p>This step is important because <code class="language-plaintext highlighter-rouge">markstat</code> uses <code class="language-plaintext highlighter-rouge">whereis</code> to find pandoc.</p>
+
+<h2 id="latex-">LaTeX <a name="latex"></a></h2>
+
+<p>These steps are only needed if you plan to generate PDF documents via
+LaTeX. A simpler alternative is to generate HTML and then ask a browser
+such as Chrome to save it as PDF, or read the file into Word and then
+save it as PDF.</p>
+
+<p>1. For best results generating PDF documents we first convert Markdown
+to LaTeX using Pandoc, and then use a LaTeX-to-PDF converter.</p>
+
+<p>This will be part of a LaTeX installation such as MikTeX on Windows,
+MacTex on Mac OS X, or TeX Live on Unix. Consult your local TeX guru if
+you need help installing this tool.</p>
+
+<p>2. You then use the <code class="language-plaintext highlighter-rouge">whereis</code> command to register the location of your
+converter so <code class="language-plaintext highlighter-rouge">markstat</code> can find it. For example on a Windows computer
+where I had installed MikTeX 2.9 on a folder of the same name on the D:
+drive I used</p>
+
+<p><code class="language-plaintext highlighter-rouge">whereis pdflatex "d:\MiKTeX 2.9\miktex\bin\pdflatex.exe"</code></p>
+
+<p>using quotes because the file path includes a space. Again, your
+location may differ.</p>
+
+<p>3. You also need a LaTeX style file called <code class="language-plaintext highlighter-rouge">stata.sty</code>, which is needed
+to render Stata output. This file can be downloaded from the Stata
+Journal using the Stata command</p>
+
+<p><code class="language-plaintext highlighter-rouge">copy https://www.stata-journal.com/production/sjlatex/stata.sty stata.sty</code></p>
+
+<p>which will copy the file to your current directory. To avoid having
+multiple copies in various folders, consider copying <code class="language-plaintext highlighter-rouge">stata.sty</code> to your
+TeX tree and updating the TeX database. Please consult the documentation
+for your LaTeX distribution for instructions.</p>
+
+<h2 id="r-">R <a name="R"><a></a></a></h2>
+
+<p>In order to run R code you need to have R installed. You then need to
+register the location of the R executable with <code class="language-plaintext highlighter-rouge">whereis</code>. On a Windows
+10 system I used the command</p>
+
+<p><code class="language-plaintext highlighter-rouge">whereis R "c:/program files/R/R-3.4.3/R/bin/x64/R.exe"</code></p>
+
+<p>whereas on a Mac running OS X I used</p>
+
+<p><code class="language-plaintext highlighter-rouge">whereis R Library/Frameworks/R.framework/Resources/bin/R</code></p>
+
+<p>but of course your settings may be different. Note the use of uppercase
+R in both platforms, and the use of quotation marks when the file name
+has a space. Also, the executable name is <code class="language-plaintext highlighter-rouge">R.exe</code> on Windows but just
+<code class="language-plaintext highlighter-rouge">R</code> on Mac and Linux.</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

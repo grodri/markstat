@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<style>
+pre.stata {font-size:14px; line-height:14px;}
+</style>
+
+<h2 id="stata-15">Stata 15</h2>
+
+<p>Stata 15 was released on June 6, 2017 and I got my copy three days
+later. The big news is that it includes support for Markdown and dynamic
+documents through three new commands: <code class="language-plaintext highlighter-rouge">dyndoc</code>, <code class="language-plaintext highlighter-rouge">putpdf</code> and <code class="language-plaintext highlighter-rouge">putdocx</code>.
+It also has a <code class="language-plaintext highlighter-rouge">markdown</code> command to convert Markdown to HTML.</p>
+
+<p>How do these tools compare with <code class="language-plaintext highlighter-rouge">markstat</code>? Obviously the main
+difference is that the new commands are part of official Stata, whereas
+<code class="language-plaintext highlighter-rouge">markstat</code> relies on Pandoc and, for PDF targets, on a LaTeX
+installation. On the other hand, <code class="language-plaintext highlighter-rouge">markstat</code> has a simpler syntax and
+provides additional functionality via Pandoc, the most important of
+which is the ability to generate HTML, PDF and DOCX output from the 
+same input script.</p>
+
+<p>Here are my first impressions.</p>
+
+<h3 id="1-cleaner-scripts">1. Cleaner Scripts</h3>
+
+<p>Stata’s <code class="language-plaintext highlighter-rouge">dyndoc</code> uses the following syntax for code blocks</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+&lt;&lt;dd_do&gt;&gt;
+sysuse auto, clear
+summarize mpg
+&lt;&lt;/dd_do&gt;&gt;
+~~~~
+</code></pre></div></div>
+
+<p>Note the use of both a Markdown code fence <code class="language-plaintext highlighter-rouge">~~~~</code> and a dynamic tag
+<code class="language-plaintext highlighter-rouge">&lt;&lt;dd_do&gt;&gt;</code>. In contrast, <code class="language-plaintext highlighter-rouge">markstat</code> relies on a simple “one tab or four
+spaces” indentation rule</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sysuse auto, clear
+    summarize mpg
+</code></pre></div></div>
+
+<p>An alternative to allow more control, such as hiding Stata code, is to
+specify the <code class="language-plaintext highlighter-rouge">strict</code> option and use code fences</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```s
+    sysuse auto, clear
+    summarize mpg
+```
+</code></pre></div></div>
+
+<p>I believe this leads to more readable input scripts, much in the spirit
+or Markdown itself. Checkout this comparison with Stata’s <a href="dyndoc"><code class="language-plaintext highlighter-rouge">dyndoc</code>
+example</a> The difference is more noticeable in complex
+documents with lots of code.</p>
+
+<p>Also, <code class="language-plaintext highlighter-rouge">markstat</code> lets you introduce Mata code blocks using an <code class="language-plaintext highlighter-rouge">m</code>
+instead of an <code class="language-plaintext highlighter-rouge">s</code> in the code fence. For an example see <a href="mataMatters">Mata
+matters</a>.</p>
+
+<h3 id="2-nicer-output">2. Nicer Output</h3>
+
+<p>Compare the HTML output of dyndoc using the previous two commands</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>. sysuse auto, clear
+(1978 Automobile Data)
+
+. summarize mpg
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         mpg |         74     21.2973    5.785503         12         41
+</code></pre></div></div>
+
+<p>With the output from markstat</p>
+
+<pre class="stata">
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. summarize mpg
+
+    Variable │        Obs        Mean    Std. Dev.       Min        Max
+─────────────┼─────────────────────────────────────────────────────────
+         mpg │         74     21.2973    5.785503         12         41
+
+</pre>
+
+<p>Just a cosmetic issue, but <code class="language-plaintext highlighter-rouge">markstat</code>s HTML output is more in line with
+PDF output.</p>
+
+<h3 id="3-inline-code">3. Inline Code</h3>
+
+<p>Inline code in <code class="language-plaintext highlighter-rouge">dyndoc</code> uses a dynamic tag:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The average fuel efficiency is &lt;&lt;dd_display: %4.2f `r(mean)'&gt;&gt;.
+</code></pre></div></div>
+
+<p>The equivalent <code class="language-plaintext highlighter-rouge">markstat code</code> is a bit less obtrusive and easier to
+type</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The average fuel efficiency is `s %4.2f r(mean)`.
+</code></pre></div></div>
+
+<p>Moreover, <code class="language-plaintext highlighter-rouge">markstat</code> supports inline Mata code using an <code class="language-plaintext highlighter-rouge">m</code> instead of
+an <code class="language-plaintext highlighter-rouge">s</code>. (This is also the syntax of R markdown, which uses an <code class="language-plaintext highlighter-rouge">r</code>.)</p>
+
+<h3 id="4-metadata">4. Metadata</h3>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> takes advantage of Pandoc’s support for metadata, using a
+simple three-line syntax for author, title and date (which may be inline
+code):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% Literate Data Analysis
+% Germán Rodríguez
+% `s c(current_date)`
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> also supports more general YAML blocks. For more information
+see <a href="metadata">metadata</a>.</p>
+
+<h3 id="5-bibliographies">5. Bibliographies</h3>
+
+<p>Thanks again to the amazing Pandoc, <code class="language-plaintext highlighter-rouge">markstat</code> supports citations. The
+basic idea is to prepare a BibTeX file with the references. You can then
+cite them in the text, for example typing <code class="language-plaintext highlighter-rouge">@knuth84</code> to refer to his
+literate programming paper. The <code class="language-plaintext highlighter-rouge">bib</code> option of <code class="language-plaintext highlighter-rouge">markstat</code> will arrange
+for Pandoc to format the citations, look them up in the BibTeX database,
+and generate a list of references at the end of your document, in a
+style of your choice. For example Knuth’s paper will appear in the
+default Chicago style as</p>
+
+<blockquote>
+  <p>Knuth, Donald. 1984. “Literate Programming.” The Computer Journal 27
+(2): 97—111.</p>
+</blockquote>
+
+<p>For a quick example see <a href="citations">citations</a>. A more extended
+example is provided by my Stata Journal paper introducing
+`markstat[\^1]]. Check out <a href="mkstpaper">this page</a> for access 
+to the source code of the paper and the BibTeX database used to resolve 
+the references, as well as the resulting HTML and PDF versions.</p>
+
+<h3 id="6-pdf-output">6. PDF Output</h3>
+
+<p>I think a big advantage of <code class="language-plaintext highlighter-rouge">markstat</code> is that it can generate a PDF file
+from the same input script, admitedly at the expense of needing a LaTeX
+distribution. But once you have jumped the installation hurdle, all you
+do is add the <code class="language-plaintext highlighter-rouge">pdf</code> option, as explained in the original paper.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">dyndoc</code> command generates HTML only. There is a new <code class="language-plaintext highlighter-rouge">putpdf</code>
+command, but this is really a lower-level command; it provides a lot of
+control, but seems aimed more at programmers than regular users. Compare
+typing the text</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You can *italicize*, ~~strikeout~~, &lt;u&gt;underline&lt;/u&gt;, sub/super script~2~
+</code></pre></div></div>
+
+<p>with writing the commands</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>putpdf text ("You can ")
+putpdf text ("italicize, "), italic
+putpdf text ("strikeout, "), strikeout
+putpdf text ("underline"), underline
+putpdf text (", sub/super script")
+putpdf text ("2 "), script(sub)
+</code></pre></div></div>
+
+<p>A comparison of <code class="language-plaintext highlighter-rouge">markstat</code> with <code class="language-plaintext highlighter-rouge">putpdf</code> using the example in the Stata
+announcement may be found <a href="putpdf">here</a>.</p>
+
+<p>For longer examples, you can see both the input script and the HTML and
+PDF output for my papers on the <a href="wfsx">wfs</a> and <a href="mkstpaper">markstat</a>
+commands, as well as the <code class="language-plaintext highlighter-rouge">markstat</code> version of my <a href="tutorial">Stata
+tutorial</a>.</p>
+
+<h3 id="7-word-documents">7. Word Documents</h3>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> 2.0 and higher can also generate a Word document from the
+same input script using the <code class="language-plaintext highlighter-rouge">docx</code> option. As noted above, <code class="language-plaintext highlighter-rouge">dyndoc</code> can
+generate HTML only<sup>*</sup>. There is a new <code class="language-plaintext highlighter-rouge">putdocx</code> command, but again this is
+really a lower-level command; it provides a lot of control but at a
+price, compare typing the script</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You can *italicize*, ~~strikeout~~, &lt;u&gt;underline&lt;/u&gt;, sub/super script~2~
+</code></pre></div></div>
+
+<p>which by the way is exactly the same as in 6 above, with writing the
+commands</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>putdocx text ("You can ")
+putdocx text ("italicize, "), italic
+putdocx text ("strikeout, "), strikeout
+putdocx text ("underline"), underline
+putdocx text (", sub/super script")
+putdocx text ("2 "), script(sub)
+</code></pre></div></div>
+
+<p>A comparison of <code class="language-plaintext highlighter-rouge">markstat</code> with <code class="language-plaintext highlighter-rouge">putdocx</code> using the example in the Stata
+announcement may be found <a href="putdocx">here</a>. Another example using
+the proverbial fuel efficiency data may be found <a href="docx">here</a>. Please note
+that the <code class="language-plaintext highlighter-rouge">docx</code> option works best with Pandoc 2.0 or higher.</p>
+
+<p><sup>*</sup><b>Update</b>. Stata 16 added a <code class="language-plaintext highlighter-rouge">docx</code> option to <code class="language-plaintext highlighter-rouge">dyndoc</code>,
+so it can generate a Word document from a Markdown script with Stata
+dynamic tags. There are also improvements to <code class="language-plaintext highlighter-rouge">putdocx</code> and new commands
+<code class="language-plaintext highlighter-rouge">html2docx</code> and <code class="language-plaintext highlighter-rouge">docx2pdf</code> for converting across formats.</p>
+
+<h3 id="8-dynamic-presentations">8. Dynamic Presentations</h3>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> 2.0 and higher can also generate HTML presentations using the
+S5 engine, or PDF presentations via LaTeX using Beamer, all thanks to
+the amazing Pandoc. You use metadata to specify the title, author and
+date of the presentation, which are used to generate a title slide. You
+then author your slides using Markdown for your narrative, including
+bullet points which can be shown incrementally, and Stata code and
+results. For an introductory example see <a href="presentations.html">dynamic
+presentations</a>.</p>
+
+<p>Stata 15 has no equivalent commands. It is possible to author your
+slides directly in HTML or LaTeX and embed Stata code and results using
+Stata 15’s <code class="language-plaintext highlighter-rouge">dyntext</code>, but then you have to deal with the complexity of
+writing HTML or LaTeX code instead of simple Markdown.</p>
+
+<p>Also, <code class="language-plaintext highlighter-rouge">markstat</code> uses the same script for both output formats, and the
+new <code class="language-plaintext highlighter-rouge">nodo</code> option lets you tinker with your presentation, and change
+engines and/or themes, without having to rerun the analysis. (Hat tip to
+Ben Jann, who provides a <code class="language-plaintext highlighter-rouge">nodo</code> option in <code class="language-plaintext highlighter-rouge">texdoc</code>) Finally, the new
+<code class="language-plaintext highlighter-rouge">bundle</code> option lets you produce self-contained HTML presentations, with
+all graphs as well as ancillary CSS and JavaScript files included in the
+document using base64 encoding. Beamer presentations are always
+self-contained.</p>
+
+<h3 id="9-r-code">9. R Code</h3>
+
+<p>Not a relevant comparison here, but in addition to Stata and Mata code,
+<code class="language-plaintext highlighter-rouge">markstat</code> lets you use R code, both in fenced blocks and inline. For an
+example see a comparison of how Stata and R compute
+<a href="quantiles">quantiles</a>.</p>
+
+<p><small>Updated for markstat 2.0</small></p>
+
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

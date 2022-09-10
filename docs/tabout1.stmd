@@ -1,0 +1,30 @@
+```s/
+	quietly sysuse auto, clear
+	quietly sum weight
+	local meanwt = r(mean)
+	quietly sum length
+	local meanlen = r(mean)
+	local obs = r(N)
+	quietly tabout rep78 foreign using table34.html, replace ///
+		style(htm) font(italic) c(mean weight) f(0c) sum ///
+		twidth(9) h1(Car type (mean weight in lbs.)) h3(nil) ///
+		title(Table 34: Short report example) fn(auto.dta)
+```
+
+The title of my short report
+----------------------------
+
+This is an excerpt of the report to focus on the dynamic parts.
+And now we have an important result: __`s %3.2f `meanwt'`__ is
+the average weight of all vehicles. And a second important 
+result: __`s %3.2f `meanlen'`__ is the average length.
+
+And now we have the first table.
+
+<center>
+
+.include table34.html
+
+</center>
+
+<style>table {display:table; width:auto;}</style>

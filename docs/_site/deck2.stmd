@@ -1,0 +1,81 @@
+% Two-Column Slides
+% Germán Rodríguez
+% November 10, 2017
+
+# An Economist Graph {.fragile}
+
+The [Stata Tutorial](https://data.princeton.edu/stata) has a plot of U.S. Life
+Expectancy over time using the Economist scheme. Here's the code and graph 
+side-by-side:
+
+:::::: {.columns}
+::: {.column}
+
+```s
+#delimit ;
+quietly sysuse uslifeexp, clear;
+graph twoway line
+  le_wmale le_bmale year, 
+     clcolor(blue red)
+     title("U.S. Life Expectancy") 
+     subtitle("Males") 
+     legend( 
+       order(1 "white" 2 "black") 
+       ring(0) 
+       pos(5)
+     )
+     yscale(log 
+       range(25 80)
+     ) 
+     scheme(economist);
+  quietly graph export economist.png, 
+    width(500) replace;
+```
+
+:::
+::: {.column}
+![](economist.png){width="90%"}
+:::
+::::::  
+
+
+# Visualizing Regression Models {.fragile}
+
+Dawn Koffman gave a [workshop](https://goo.gl/8tWr7e)
+on visualizing regression models using Ben Jann's `coefplot`. 
+After reading the data, running a regression model, and storing the
+estimates, she plots the coefficients:
+
+```s/
+#delimit ;
+webuse nhanes2, clear;
+quietly tab region, gen(reg);
+quietly logit diabetes female age bmi reg1-reg4;
+estimates store fem_age_bmi_reg;
+```
+
+:::::: {.columns}
+::: {.column}
+
+```s
+#delimit ;
+coefplot fem_age_bmi_reg, eform  
+ drop (_cons) xscale(log)      
+ xline(1, lwidth(vthin)) omitted
+ cismooth grid(none) 
+ coeflabels(
+  female="female" age="age (years)"
+  bmi="bmi" reg1="Northest" 
+  reg2="Midwest" reg3="South"
+  reg4="(reference cat) West",
+  notick labsize(medlarge))
+  title(Diabetes Risk Factors, 
+   color(black));
+quietly graph export coefplot.png,
+ width(500) replace;
+```  
+:::
+::: {.column}
+![](coefplot.png){width="100%"}
+:::
+::::::  

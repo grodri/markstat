@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<div class="d-flex">
+<div class="p-2"><img src="markstat.png" /></div>
+<div class="lead mb-3 ml-3 pl-3">
+ The <code>markstat</code> command lets you combine <u>Mark</u>down
+annotations with <u>Stat</u>a commands to produce dynamic documents and
+presentations.
+</div></div>
+
+<h3 id="scripts">Scripts</h3>
+
+<p>The basic idea is to write Markdown annotations with Stata code indented
+one tab or four spaces, as in the following script:</p>
+
+<pre>
+% Stata Markdown
+
+Let us read the fuel efficiency data that is shipped with Stata
+
+    sysuse auto, clear
+
+To study how fuel efficiency depends on weight it is useful to
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"
+
+    gen gphm = 100/mpg
+
+Let us draw a scatterplot of our transformed measure versus weight
+and fit a straight line
+
+    twoway scatter gphm weight || lfit gphm weight ///
+        , ytitle(Gallons per 100 Miles) legend(off)
+    graph export fuel.png, width(500) replace
+
+![Fuel Efficiency](fuel.png){width="4.5in"}    
+
+We obtain a more linear relationship than using miles per gallon.
+</pre>
+
+<p>The full script, which also runs a regression, may be found
+<a href="simpleScript">here</a>.</p>
+
+<h3 id="documents">Documents</h3>
+
+<p>Running the command <code class="language-plaintext highlighter-rouge">markstat using auto</code> produces the web page 
+shown <a href="auto.html">here</a>. The partial screen capture below will 
+give you an idea of the output:</p>
+
+<div clas="text-center mb-3" style="border:1px solid #c0c0c0">
+<img src="auto-snip.png" />
+</div>
+
+<p>If you add the option <code class="language-plaintext highlighter-rouge">pdf</code> you will produce the PDF document shown
+<a href="auto.pdf">here</a>. If you use the option <code class="language-plaintext highlighter-rouge">docx</code> instead, you will obtain
+the Word document shown <a href="auto.docx">here</a>. All from the same script!</p>
+
+<p>By the way, if you run the code and your graph looks a bit different
+from mine, this is because I use the <code class="language-plaintext highlighter-rouge">plottig</code> scheme in Stata.</p>
+
+<h3 id="presentations">Presentations</h3>
+
+<p>You can also generate dynamic presentations that use the HTML S5 engine,
+or produce Beamer slides in PDF format, all written using <code class="language-plaintext highlighter-rouge">markstat</code> to
+combine Markdown with Stata.</p>
+
+<p>Consider as an example the following slide, that shows Stata code and a
+graph side by side. This is part of a Beamer deck.</p>
+
+<p align="center">
+<img src="economist.png" alt="A Slide in a Teo-Column Deck" /><br /> A
+Slide in a Two-Column Deck
+</p>
+
+<p>The complete script generating a two-column presentation with three
+slides is available <a href="twoColumnSlides">here</a>. You can view the S5 engine
+output with the Santiago theme <a href="santiago.html">here</a>, and the Beamer
+slides using <em>exactly</em> the same script with the <code class="language-plaintext highlighter-rouge">beamer(madrid)</code> option
+<a href="madrid.pdf">here</a>.</p>
+
+<h3 id="next-steps">Next Steps</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">markstat</code> command was introduced in the <em>Stata Journal</em>, see [G.
+Rodríguez (2017) “Literate Data Analysis using Stata and Markdown”,
+<em>Stata Journal</em>, Volume 17, Number 3, pp. 600-619]
+(https://www.stata-journal.com/article.html?article=pr0067). More
+extensive and up-to-date documentation will be found on this website.</p>
+
+<p>The <a href="gettingStarted">Getting Started</a> section shows how to install
+<code class="language-plaintext highlighter-rouge">markstat</code> and the required <code class="language-plaintext highlighter-rouge">whereis</code> command from SSC. You will also
+find download instructions for Pandoc, the document converted used to
+handle Markdown, and notes on the requirements for producing PDF via
+LaTeX on Windows, Macs and Linux.</p>
+
+<p>The <a href="documentation">Documentation</a> section expands a bit on the
+command’s help file. It describes how it works, explains the command
+syntax, has a short introduction to Markdown, and discusses how to
+handle mathematical equations, metadata, code blocks and inline code,
+tables, figures, citations, and presentations.</p>
+
+<p>You will then find a large number of <a href="examples">Examples</a>, ranging from
+the simple script introduced here to a more complex example fitting
+Cox’s proportional hazards model using Stata and R, with Bootstrap tabs
+to shift between versions.</p>
+
+<p>Stata 15 introduced support for Markdown and dynamic documents. A
+comparison of the official commands with <code class="language-plaintext highlighter-rouge">markstat</code> may be found
+<a href="stata15">here</a>.</p>
+
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

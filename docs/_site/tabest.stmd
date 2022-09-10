@@ -1,0 +1,26 @@
+
+Let us compare the fuel efficiency of foreign and domestic cars before
+and after adjusting for weight. We use gallons per 100 miles (gphm) as our
+measure of efficiency because it has a more linear relationship with weight.
+
+```s/
+	quietly sysuse auto, clear
+	gen gphm = 100/mpg
+	quietly regress gphm i.foreign
+	estimates store unadj
+	quietly regress gphm i.foreign weight
+	estimates store adjusted
+	quietly etable, estimates(unadj adjusted) column(estimates) ///
+		cstat(_r_b) cstat(_r_z, sformat((%s))) showstars showstarsnote
+	quietly collect style cell border_block[corner column-header], ///
+		border(bottom top , width(0.5pt))
+	quietly collect style cell border_block[row-header item], ///
+		border(top bottom, width(0.5pt))
+	quietly collect export table2.html, tableonly replace
+```
+
+.include table2.html
+	
+Foreign cars on average use one gallon less than domestic cars to travel 
+100 miles, but when we compare cars with the same weight they use 
+`s %4.2f _b[1.foreign]` gallons more.

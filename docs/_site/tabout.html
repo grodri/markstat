@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="tables-of-statistics">Tables of Statistics</h2>
+
+<p>Ian Watson's <code class="language-plaintext highlighter-rouge">tabout</code> can produce beautiful frequency tables and tables
+of summary statistics, with output in LaTeX or HTML, and as noted in
+Chapter 9 of the User's Guide for version 3, it can also produce
+dynamic documents.</p>
+
+<p>Here we show how you can combine the power of <code class="language-plaintext highlighter-rouge">tabout</code> with the
+simplicity of <code class="language-plaintext highlighter-rouge">markstat</code> to produce dynamic documents, using an
+abbreviated version of the example on page 72 and table 34 of <a href="http://tabout.net.au/downloads/tabout_user_guide.pdf">the
+User's Guide</a>.</p>
+
+<p>Note that we use <code class="language-plaintext highlighter-rouge">tabout</code> to generate <code class="language-plaintext highlighter-rouge">table34.html</code> and then simply
+<code class="language-plaintext highlighter-rouge">.include table34.html</code> in the document. We omit the options <code class="language-plaintext highlighter-rouge">topf</code>,
+<code class="language-plaintext highlighter-rouge">topstr</code>, <code class="language-plaintext highlighter-rouge">botf</code> and <code class="language-plaintext highlighter-rouge">botstr</code>, using simple Markdown with inline code
+instead. Here is the script</p>
+
+<div class="text-end"><code>tabout1.stmd</code></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```s/
+	quietly sysuse auto, clear
+	quietly sum weight
+	local meanwt = r(mean)
+	quietly sum length
+	local meanlen = r(mean)
+	local obs = r(N)
+	quietly tabout rep78 foreign using table34.html, replace ///
+		style(htm) font(italic) c(mean weight) f(0c) sum ///
+		twidth(9) h1(Car type (mean weight in lbs.)) h3(nil) ///
+		title(Table 34: Short report example) fn(auto.dta)
+```
+
+The title of my short report
+----------------------------
+
+This is an excerpt of the report to focus on the dynamic parts.
+And now we have an important result: __`s %3.2f `meanwt'`__ is
+the average weight of all vehicles. And a second important 
+result: __`s %3.2f `meanlen'`__ is the average length.
+
+And now we have the first table.
+
+&lt;center&gt;
+
+.include table34.html
+
+&lt;/center&gt;
+
+&lt;style&gt;table {display:table; width:auto;}&lt;/style&gt;
+</code></pre></div></div>
+
+<p>And this is how the script is rendered by the command <code class="language-plaintext highlighter-rouge">markstat using tabout</code>.</p>
+
+<div class="text-end"><code>tabout1.html</code></div>
+<iframe src="tabout1.html" width="100%" scrolling="no" class="border mb-3">
+</iframe>
+
+<p><em>Note</em>. <code class="language-plaintext highlighter-rouge">tabout</code> generates the table title and footer as separate
+paragraphs rather than a <code class="language-plaintext highlighter-rouge">caption</code> and <code class="language-plaintext highlighter-rouge">tfoot</code>. As a result they are not
+centered when the table is centered. To keep everything together I
+wrapped the table in center tags. I also added a CSS rule at the end
+to make sure the table width was automatic.</p>
+
+<p>To obtain LaTeX output you just need to change the output to
+<code class="language-plaintext highlighter-rouge">using table34.tex</code>, the style to <code class="language-plaintext highlighter-rouge">style(tex)</code>, and then use
+<code class="language-plaintext highlighter-rouge">\input{table34.tex}</code> instead of <code class="language-plaintext highlighter-rouge">.include</code>.</p>
+
+<p>In order to convert the generated LaTeX to PDF, however, we need to add
+four packages used by <code class="language-plaintext highlighter-rouge">tabout</code> which are not included in the Pandoc
+template. Fortunately this is easy to do with "header includes". This
+example uses only the first three packages, but I include all four for
+completeness. At the start of the script simply insert this YAML block:</p>
+
+<pre>
+---
+header-includes:
+  - \usepackage{multicol}
+  - \usepackage{tabularx}
+  - \usepackage{booktabs}
+  - \usepackage{lscape}
+---
+</pre>
+
+<p>The revised script is available <a href="tabout2.stmd">here</a> and the resulting
+pdf file is <a href="tabout2.pdf">here</a>.</p>
+
+<p>The same approach can be used with other Stata commands that generate
+HTML or LaTeX output.</p>
+
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const iframes = document.getElementsByTagName("iframe");
+    [...iframes].forEach( (iframe) => {
+        iframe.onload = function(){
+            iframe.style.height = iframe.contentWindow.document.body.scrollHeight  + "px";
+        }    
+    });    
+})
+
+</script>
+
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

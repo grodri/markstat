@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="a-simple-script">A Simple Script</h2>
+
+<p>Here is a simple script drawing a graph and running a regression, using
+Markdown annotations and Stata code indented four spaces:</p>
+
+<div class="text-end"><code>auto.stmd</code></div>
+<pre>
+% Dynamic Documents with Stata and Markdown
+% Germán Rodríguez, Princeton University
+% 4 November 2017
+                                                                
+Let us read the fuel efficiency data that ships with Stata
+                                                                
+    sysuse auto, clear                                          
+                                                                
+To study how fuel efficiency depends on weight it is useful to  
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"     
+
+    gen gphm = 100/mpg
+	
+We then obtain a fairly linear relationship
+                                                                
+    twoway scatter gphm weight || lfit gphm weight,  /// 
+        ytitle(Gallons per 100 Miles) legend(off)
+    graph export auto.png, width(500) replace
+
+![Fuel Efficiency by Weight](auto.png)
+
+The regression equation estimated by OLS is
+
+    regress gphm weight
+
+Thus, a car that weighs 1,000 pounds more than another requires 
+on average an extra 1.4 gallons to travel 100 miles. 
+
+That's all for now!
+
+
+</pre>
+
+<p>And this is how it is rendered using the command <code class="language-plaintext highlighter-rouge">markstat using auto</code></p>
+
+<div class="text-end"><code>auto.html</code></div>
+<iframe id="frame" src="auto.html" width="100%" scrolling="no" class="border mb-3">
+</iframe>
+
+<p>If you add the <code class="language-plaintext highlighter-rouge">pdf</code> option, you will obtain the pdf file seen
+<a href="auto.pdf">here</a>. If you use the option <code class="language-plaintext highlighter-rouge">docx</code> instead, you will obtain
+the Word document seen <a href="auto.docx">here</a>. By the way this is basically
+the example in the <code class="language-plaintext highlighter-rouge">markstat</code> help file.</p>
+
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const iframes = document.getElementsByTagName("iframe");
+    [...iframes].forEach( (iframe) => {
+        iframe.onload = function(){
+            iframe.style.height = iframe.contentWindow.document.body.scrollHeight  + "px";
+        }    
+    });    
+})
+
+</script>
+
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

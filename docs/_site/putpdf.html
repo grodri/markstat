@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h3 id="pdf-files">PDF Files</h3>
+
+<p>Stata 15 has a <code class="language-plaintext highlighter-rouge">putpdf</code> command that can automate the production of PDF files using low-level instructions. The <code class="language-plaintext highlighter-rouge">markstat</code> command can achieve equivalent results using Markdown to author the document.</p>
+
+<p>The example below, taken from Stata 15’s announcement of <code class="language-plaintext highlighter-rouge">putpdf</code>, shows the code in <code class="language-plaintext highlighter-rouge">samplereport.do</code> and the equivalent <code class="language-plaintext highlighter-rouge">markstat</code> script, which reproduces all results but skips changing the background color of text<sup>1</sup>.</p>
+
+<ul class="nav nav-tabs">
+<li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#putpdf">putpdf</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#markstat">markstat</a></li>
+</ul>
+
+<div class="tab-content">
+<pre class="tab-pane active" id="putpdf">
+// Stata's samplereport.do
+sysuse auto, replace
+
+putpdf begin
+
+// Create a paragraph
+putpdf paragraph
+putpdf text ("putpdf "), bold
+putpdf text ("can add formatted text to a paragraph.  You can ")
+putpdf text ("italicize, "), italic
+putpdf text ("striketout, "), strikeout
+putpdf text ("underline"), underline
+putpdf text (", sub/super script")
+putpdf text ("2 "), script(sub)
+putpdf text (", and   ")
+putpdf text ("bgcolor"), bgcolor("blue")
+qui sum mpg
+local sum : display %4.2f `r(sum)'
+putpdf text (".  Also, you can easily add Stata results to your paragraph (mpg total = `sum')")
+
+// Embed a graph
+histogram rep
+graph export hist.png, replace
+putpdf paragraph, halign(center)
+putpdf image hist.png
+
+// Embed Stata output
+putpdf paragraph
+putpdf text ("Embed the output from a regression command into your pdf file.")
+regress mpg price
+putpdf table mytable = etable
+
+// Embed Stata dataset
+putpdf paragraph
+putpdf text ("Embed the data in Stata's memory into a table in your pdf file.")
+statsby Total=r(N) Average=r(mean) Max=r(max) Min=r(min), by(foreign): summarize mpg
+rename foreign Origin
+putpdf table tbl1 = data("Origin Total Average Max Min"), varnames  ///
+        border(start, nil) border(insideV, nil) border(end, nil)
+
+putpdf save myreport.pdf, replace
+</pre>
+<pre class="tab-pane" id="markstat">
+Create PDF
+==========
+
+```s/
+    quietly sysuse auto, replace	
+    quietly sum mpg
+    local sum = r(sum)
+    quietly histogram rep
+    quietly graph export hist.png, replace	
+```
+	
+`markstat` can add formatted text to a paragraph. You can *italicize*,
+~~strikeout~~, and sub/super script~2~.
+Also, you can easily add Stata results to your paragraph 
+(mpg total = `s %4.2f `sum'`)
+
+![](hist.png)
+
+Embeb the output from a regression command into your pdf file.
+
+```s/
+    quietly regress mpg price
+    _coef_table
+```
+
+Embeb the data in Stata's memory into a table in your pdf file.
+
+```s/
+    quietly statsby Total=r(N) Average=r(mean) Max=r(max) Min=r(min), ///
+        by(foreign): summarize mpg
+    rename foreign Origin
+    list Origin Total Average Max Min, noobs
+```
+</pre>
+</div>
+
+<p>This example is not very representative because it doesn’t have a lot of text. The output of <code class="language-plaintext highlighter-rouge">putpdf</code> is available from the Stata website 
+<a href="https://www.stata.com/features/overview/create-pdfs/">here</a>. 
+The output from <code class="language-plaintext highlighter-rouge">markstat</code> is  <a href="mkpdf.pdf">here</a>, 
+with a reduced screen capture below. The input script is <a href="mkpdf.stmd">here</a>.</p>
+
+<p><img src="putpdf-snip.png" alt="" /></p>
+
+<p>[1] The background color can be changed in HTML using the Markdown syntax
+<code class="language-plaintext highlighter-rouge">[bgcolor]{style="background-color:rgba(0,0,255, 0.3)"}</code> or a span tag, 
+and in PDF by using LaTeX code as shown 
+<a href="mkpdf2.stmd">here</a> with output <a href="mkpdf2.pdf">here</a>. 
+In both cases I changed  the opacity of the blue background to make the black 
+text more readable than in Stata’s original.</p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

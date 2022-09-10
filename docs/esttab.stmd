@@ -1,0 +1,22 @@
+A Table of Estimates
+--------------------
+
+The table below shows estimated differences in fuel efficiency between
+foreign and domestic cars with and without adjustment for weight, using
+gallons per 100 miles as the outcome.
+
+```s/
+    quietly sysuse auto, clear
+    quietly gen gphm = 100/mpg
+    eststo clear
+    quietly eststo: regress gphm foreign
+    quietly eststo: regress gphm foreign weight
+    esttab
+```
+
+We see that on average foreign cars are more economical, but
+if we adjust for weight they are less fuel efficient, using
+`s %3.1f _b[foreign]` gallons *more* instead of one gallon
+*less* per 100 miles.
+
+<style>pre.stata { border:none; }</style>

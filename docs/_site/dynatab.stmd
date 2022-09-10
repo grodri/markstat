@@ -1,0 +1,26 @@
+% A Dynamic Table
+
+```s/
+    quietly sysuse auto, clear
+    quietly gen gphm = 100/mpg
+    quietly regress gphm foreign
+    mat b = e(b)
+    quietly sum weight
+    scalar mw = r(mean)
+    quietly reg gphm weight foreign
+    scalar dom = _b[_cons] + _b[weight] * mw
+    local f %6.2f
+```
+
+The table below shows average fuel efficiency in gallons per 100 miles 
+for foreign and domestic cars before and after adjustment for weight:
+
+
+| Car Type   | Unadjusted            | Adjusted                  |
+|:-----------|----------------------:|--------------------------:|
+| Foreign    | `s `f' b[1,1]+b[1,2]` | `s `f' dom + _b[foreign]` |
+| Domestic   | `s `f' b[1,2]`        | `s `f' dom`               |
+
+Foreign cars use less fuel than domestic cars but are also lighter,
+when we compare cars with the same weight the imports use 
+six-tenths of a gallon more per 100 miles than the domestic cars.

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="collection-tables">Collection Tables</h2>
+
+<p>Stata 17 introduced a new system for collecting the results of Stata
+commands and producing nice customizable tables. 
+The system includes three commands: 
+<code class="language-plaintext highlighter-rouge">collect</code>, which actually does all the work, 
+<code class="language-plaintext highlighter-rouge">table</code>, which makes it easier to produce standard tables, and 
+<code class="language-plaintext highlighter-rouge">etable</code>, which specializes in estimation tables.</p>
+
+<p>Here we show briefly how to incorporate these tables in <code class="language-plaintext highlighter-rouge">markstat</code> 
+documents, revisiting the examples in <a href="tabout">tables of statistics</a>
+and <a href="estimates">tables of estimates</a>.</p>
+
+<h3 id="tables-of-statistics-">Tables of Statistics <a name="statistics"></a></h3>
+
+<p>The script below reproduces the example using <a href="tabout"><code class="language-plaintext highlighter-rouge">tabout</code></a>.</p>
+
+<div class="text-end"><code></code></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Let us look at mean weight of cars by repair record and origin
+
+```s/
+quietly {
+	sysuse auto, clear
+	table rep78 foreign, statistic(mean weight) nformat(%8.0fc)
+	collect style cell, border(right left, pattern(nil))
+	collect style cell border_block[corner column-header], ///
+		border(bottom top , width(0.5pt))
+	collect style cell border_block[row-header item], ///
+		border(top bottom, width(0.5pt))
+	collect export table1.html, tableonly replace
+}	
+```
+
+.include table1.html
+
+
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">table</code> statement is pretty simple, specifying the rows, columns,
+and the statistic to the calculated. The option <code class="language-plaintext highlighter-rouge">nformat</code> specifies a
+format for numeric output, here <code class="language-plaintext highlighter-rouge">%8.0fc</code> to round to integers using a
+comma to separate thousands.</p>
+
+<p>If you export the table to html “as is” you will notice that the table
+includes a vertical border, and all borders are in my opinion too thick.
+Fortunately the new tables are nothing if not customizable. We use
+three <code class="language-plaintext highlighter-rouge">collect style</code> commands to remove the vertical border and make 
+the horizontal borders thinner.</p>
+
+<p>Then we are ready to export the table, and then simply <code class="language-plaintext highlighter-rouge">.include</code> it 
+in the document.  Stata produces not just <code class="language-plaintext highlighter-rouge">html</code> but also a <code class="language-plaintext highlighter-rouge">css</code> file 
+for each table, which by default has the same name. Because <code class="language-plaintext highlighter-rouge">markstat</code> 
+assumes that this is the case, it is best not to change the name using 
+the <code class="language-plaintext highlighter-rouge">cssfile</code> option of <code class="language-plaintext highlighter-rouge">export</code>.</p>
+
+<p>The result is <a href="tabstat.html">here</a> and embedded below.</p>
+
+<div class="text-end"><code>tabstat.html</code></div>
+<iframe src="tabstat.html" class="border mb-3" width="100%" scrolling="no">
+</iframe>
+
+<p>Compare the output with <code class="language-plaintext highlighter-rouge">tabout</code>’s table <a href="tabout">here</a>.</p>
+
+<h3 id="tables-of-estimates-">Tables of Estimates <a name="estimates"></a></h3>
+
+<p>The script below reproduces the example using <a href="estimates"><code class="language-plaintext highlighter-rouge">esttab</code></a>.</p>
+
+<div class="text-end"><code></code></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+Let us compare the fuel efficiency of foreign and domestic cars before
+and after adjusting for weight. We use gallons per 100 miles (gphm) as our
+measure of efficiency because it has a more linear relationship with weight.
+
+```s/
+	quietly sysuse auto, clear
+	gen gphm = 100/mpg
+	quietly regress gphm i.foreign
+	estimates store unadj
+	quietly regress gphm i.foreign weight
+	estimates store adjusted
+	quietly etable, estimates(unadj adjusted) column(estimates) ///
+		cstat(_r_b) cstat(_r_z, sformat((%s))) showstars showstarsnote
+	quietly collect style cell border_block[corner column-header], ///
+		border(bottom top , width(0.5pt))
+	quietly collect style cell border_block[row-header item], ///
+		border(top bottom, width(0.5pt))
+	quietly collect export table2.html, tableonly replace
+```
+
+.include table2.html
+	
+Foreign cars on average use one gallon less than domestic cars to travel 
+100 miles, but when we compare cars with the same weight they use 
+`s %4.2f _b[1.foreign]` gallons more.
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">etable</code> command makes producing tables of estimates easy, you
+run each regression storing the estimates and then call <code class="language-plaintext highlighter-rouge">etable</code> with
+the names of the stored estimates. We use the <code class="language-plaintext highlighter-rouge">column</code> option to
+label the columns with the names of the <code class="language-plaintext highlighter-rouge">estimates</code>, the default
+is the name of the dependent variable. The <code class="language-plaintext highlighter-rouge">showstars</code> option adds 
+the usual significance stars, which can also be customized, and
+<code class="language-plaintext highlighter-rouge">showstarsnote</code> adds and explanatory note.</p>
+
+<p>By default <code class="language-plaintext highlighter-rouge">etable</code> shows estimates with standard errors in
+parentheses, but our <code class="language-plaintext highlighter-rouge">esttab</code> example included t-statistics
+rather than standard errors in parentheses. To reproduce
+that feature we specify two <em>coefficient statistics</em>, using
+<code class="language-plaintext highlighter-rouge">cstat(_r_b)</code> for the coefficient and <code class="language-plaintext highlighter-rouge">cstat(_r_z, sformat((%s)))</code>
+for the test, adding a string format to enclose the latter in
+parentheses.</p>
+
+<p>Once again, if you export the table to html you will see that the borders
+are in my opinion too thick, although this time there is no vertical 
+border. The two <code class="language-plaintext highlighter-rouge">collect style</code> commands make the borders thinner.
+We then export the table and <code class="language-plaintext highlighter-rouge">.include</code> it in the document.
+The result is <a href="tabest.html">here</a> and embedded below.</p>
+
+<div class="text-end"><code>tabest.html</code></div>
+<iframe src="tabest.html" class="border mb-3" width="100%" scrolling="no">
+</iframe>
+
+<p>Compare the output with <code class="language-plaintext highlighter-rouge">esttab</code>’s output <a href="estimates">here</a>.</p>
+
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const iframes = document.getElementsByTagName("iframe");
+    [...iframes].forEach( (iframe) => {
+        iframe.onload = function(){
+            iframe.style.height = iframe.contentWindow.document.body.scrollHeight  + "px";
+        }    
+    });    
+})
+
+</script>
+
+<p><small> Updated for <code class="language-plaintext highlighter-rouge">markstat</code> 2.7</small></p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

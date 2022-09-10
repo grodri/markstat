@@ -1,0 +1,89 @@
+LaTeX automatically numbers sections, tables, figures and equations,
+and can handle cross-references. Here are some notes on how to take
+advantage of this feature in a `markstat` script. Note that this
+only applies if you are generating PDF via LaTeX.
+
+Executive summary: use `{#id}` to label sections and figures, `\label{id}`
+to label tables and equations, and `\ref{id}` to refer to them.
+
+# Sections {#sections}
+
+Pandoc by default stops LaTeX from numbering sections. To obtain numbers
+add `numbersections: true` to the YAML metadata at the top of your
+document. To label a section add an identifier to the heading. (Pandoc
+adds default identifiers, but if you are going to refer to the section
+I recommend you add one manually.) For example this section's heading is 
+coded `# Sections {#sections}`. You can then refer to it using the LaTeX 
+command `\ref{sections}`. This has been Section \ref{sections}. 
+
+# Tables
+
+With tables, adding an identifier such as `{#id}` to the caption does not
+work, so we use the LaTeX command `\label(id)` instead. We can then refer
+to it as `\ref{id}`. For example the caption for the table shown below is 
+coded `: Fuel Efficiency \label{tabfuel}`. We can then refer to the table
+using `\ref{tabfuel}`. Note that LaTeX adds "Table 1:" to the caption.
+
+: Fuel Efficiency \label{tabfuel}
+
+Car Type      Unadjusted    Adjusted
+----------  ------------  ----------
+Foreign           4.31         5.46
+Domestic          5.32         4.83
+
+As you can see from Table \ref{tabfuel}, domestic cars are more efficient
+than foreign cars when we adjust for weight. 
+
+# Figures
+
+Here is a figure showing gallons per hundred miles by weight for foreign
+and domestic cars. Consult the source script for the code.
+
+```s/
+	quietly sysuse auto, clear
+	gen gphm = 100/mpg
+	scatter gphm weight if foreign || scatter gphm weight if !foreign ///
+		, legend(order(1 "foreign" 2 "domestic") ring(0) pos(5))
+	quietly graph export fuel.png, replace
+```
+![Fuel Efficiency](fuel.png){#plotfuel}
+
+To insert the figure in the document I used the Markdown code 
+`![Fuel Efficiency](fuel.png){#plotfuel}`, adding an identifier, so we can 
+refer to the figure using `\ref{plotfuel}`, as in see Figure \ref{plotfuel}.
+Note that LaTeX adds "Figure 1:" to the caption. 	
+
+# Equations
+
+LaTeX will only number equations in `equation` environments. Fortunately 
+Pandoc accepts this notation. Here is an example:
+
+Equation \ref{slr} below shows a simple linear regression model
+
+\begin{equation}\label{slr}
+y = \alpha  + \beta x + \epsilon
+\end{equation}
+
+Here I started the environment by coding `\begin{equation}\label{slr}`, wich
+labels the equation as `slr`. We can then refer to it using the LaTeX command
+`\ref{slr}`.
+
+# Running
+
+Resolving references in LaTeX requires two passes. When you create the
+document use the option `keep(tex aux)` to keep the intermediate files:
+
+```
+markstat using crossref, pdf keep(tex aux)
+```
+
+Then run `pdflatex` to resolve the references. You can do this from Stata
+
+```
+whereis(pdflatex)
+! "`r(pdflatex)'" crossref.tex
+view browse crossref.pdf
+```
+
+You may need to close the file in your Acrobat viewer before running the
+second step.

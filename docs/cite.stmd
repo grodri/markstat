@@ -1,0 +1,14 @@
+---
+title: Literate Data Analysis
+author: Germán Rodríguez
+date: 1 June 2017
+bibliography: cite.bib
+---
+
+Donald Knuth [-@knuth84] is a strong believer in documenting computer
+programs and originated the term *literate programming*. This concept
+is even more important in data analysis, where documenting each step
+in data collection, processing and analysis is crucial [see @leisch02;
+@rossini01]. 
+
+## References

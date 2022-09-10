@@ -1,0 +1,17 @@
+Let us look at mean weight of cars by repair record and origin
+
+```s/
+quietly {
+	sysuse auto, clear
+	table rep78 foreign, statistic(mean weight) nformat(%8.0fc)
+	collect style cell, border(right left, pattern(nil))
+	collect style cell border_block[corner column-header], ///
+		border(bottom top , width(0.5pt))
+	collect style cell border_block[row-header item], ///
+		border(top bottom, width(0.5pt))
+	collect export table1.html, tableonly replace
+}	
+```
+
+.include table1.html
+

@@ -1,0 +1,37 @@
+﻿
+<h1><a href="#stata-markdown" id="stata-markdown">Stata Markdown</a></h1>
+<p>Let us read the fuel efficiency data that is shipped with Stata</p>
+<pre><code>. sysuse auto, clear
+(1978 Automobile Data)
+
+</code></pre>
+<p>To study how fuel efficiency depends on weight it is useful to transform the dependent variable from &ldquo;miles per gallon&rdquo; to &ldquo;gallons per 100 miles&rdquo;</p>
+<pre><code>.     gen gphm = 100/mpg
+
+</code></pre>
+<p>We then obtain a more linear relationship</p>
+<pre><code>.     twoway scatter gphm weight || lfit gphm weight ///
+&gt;         , ytitle(Gallons per Mile) legend(off)
+
+</code></pre>
+<img src="auto.png" width="500" >
+<p>The regression equation estimated by OLS is</p>
+<pre><code>.         regress gphm weight
+
+      Source |       SS           df       MS      Number of obs   =        74
+-------------+----------------------------------   F(1, 72)        =    194.71
+       Model |  87.2964969         1  87.2964969   Prob &gt; F        =    0.0000
+    Residual |  32.2797639        72  .448330054   R-squared       =    0.7300
+-------------+----------------------------------   Adj R-squared   =    0.7263
+       Total |  119.576261        73  1.63803097   Root MSE        =    .66957
+
+------------------------------------------------------------------------------
+        gphm |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      weight |    .001407   .0001008    13.95   0.000      .001206    .0016081
+       _cons |   .7707669   .3142571     2.45   0.017     .1443069    1.397227
+------------------------------------------------------------------------------
+
+</code></pre>
+<p>Thus, a car that weighs 1,000 lbs more than another requires on average an extra   1.4 gallons to travel 100 miles.</p>
+<p>That&rsquo;s all for now!</p>

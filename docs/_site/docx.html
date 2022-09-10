@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h1 id="dynamic-word-documents">Dynamic Word Documents</h1>
+
+<p><code class="language-plaintext highlighter-rouge">markstat</code> 2.0 can generate Word documents from the same script used to
+generate HTML or PDF via LaTeX. Here's the example in my <a href="https://www.stata-journal.com/article.html?article=pr0067">SJ 17-3
+article</a>,
+expanded to use metadata and inline code.</p>
+
+<div class="text-center"><code>fuel.stmd</code></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% Dynamic Documents with Stata and Markdown
+% Germán Rodríguez, Princeton University
+% 4 November 2017
+
+Let us read the fuel efficiency data that is shipped with Stata
+
+    sysuse auto, clear
+
+To study how fuel efficiency depends on weight it is useful to
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"
+
+    gen gphm = 100/mpg
+
+We then obtain a more linear relationship
+
+![Fuel Efficiency](fuel.png){width="4.5in"}
+
+which was plotted using the commands
+
+    twoway scatter gphm weight || lfit gphm weight ///
+        , ytitle(Gallons per Mile) legend(off)
+    graph export fuel.png, width(500) replace
+
+The regression equation estimated by OLS is
+
+    regress gphm weight    
+    
+Thus, a car that weights 1,000 lbs more than another requires on
+average an extra `s %5.1f 1000*_b[weight]` gallons to travel 100 
+miles.
+    
+That's all for now!
+
+</code></pre></div></div>
+
+<p>Save the script as <code class="language-plaintext highlighter-rouge">fuel.stmd</code>, or download it from this website using
+the Stata command</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>copy https://grodri.github.io/markstat/fuel.stmd fuel.stmd
+</code></pre></div></div>
+
+<p>The command <code class="language-plaintext highlighter-rouge">markstat using fuel</code> will generate a web page. Adding the
+<code class="language-plaintext highlighter-rouge">docx</code> option, so the command becomes <code class="language-plaintext highlighter-rouge">markstat using fuel, docx</code>,
+generates a Word document instead. A screen capture of the output is
+shown below, or download the document <a href="fuel.docx">here</a>.</p>
+
+<p><img src="docx-snip.png" class="img-responsive" style="max-width:768px" /></p>
+
+<p>If you have a LaTeX installation, changing the option to <code class="language-plaintext highlighter-rouge">pdf</code> will
+generate a PDF file via LaTeX, as shown <a href="fuel.pdf">here</a>. 
+Of course you can always save a Word document as PDF, so the <code class="language-plaintext highlighter-rouge">pdf</code> 
+option is really for LaTeX aficionados who want to take advantage
+ of features unique to that format.</p>
+
+<p>The figure size of 4.5 inches was chosen to produce good page breaks in
+both Word and LaTeX, a tall task given the differences in layout. At the
+time of writing there is no simple way to control page breaks in Word,
+other than editing the output document.</p>
+
+<h3 id="the-reference-document">The Reference Document</h3>
+
+<p>Generation of Word documents relies on a reference document called
+<code class="language-plaintext highlighter-rouge">markstat.docx</code>, which is installed together with <code class="language-plaintext highlighter-rouge">markstat</code> in your ado
+PLUS folder. This document serves as a template of sorts, and ensures
+that Stata output is rendered well. You can edit this document to modify
+built-in styles or to define your own styles. If you save your
+customized reference document as <code class="language-plaintext highlighter-rouge">markstat.docx</code> in the current working
+directory, it will be used instead of the default. This allows you to
+define different styles for different projects, each in its own working
+directory.</p>
+
+<p><strong>Built-In Styles</strong>. Pandoc uses a number of built-in styles, such as
+Title, Author and Date. Suppose you wanted the title, author and date
+block to be single spaced. To customize these styles, copy
+<code class="language-plaintext highlighter-rouge">markstat.docx</code> to your current working directory and then open it in
+Word.Modify the Title style, selecting Format, then Paragraph, and under
+Spacing changing After to 0 pt. Do the same for the Author and Date
+styles. Save the reference document. When you run <code class="language-plaintext highlighter-rouge">markstat</code> the title
+block will be single spaced.</p>
+
+<p><strong>Custom Styles</strong>. Pandoc lets you assign attributes to text spans and
+blocks, and scripts generating Word documents may use the
+"custom-style" attribute to assign a custom style. For example to
+highlight <span style="background-color:yellow">some text</span> 
+you can code</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[some text]{custom-style="Highlight"}
+</code></pre></div></div>
+
+<p>This works in Word because <code class="language-plaintext highlighter-rouge">markstat</code>'s default reference document
+includes a custom "Highlight" style, but there is nothing to stop you
+from creating your own custom styles.</p>
+
+<p><strong>Paragraph Styles</strong>. In addition to character styles such as
+"Highlight", you can define paragraph styles. Suppose you want to
+create an indented paragraph style. Make a copy of <code class="language-plaintext highlighter-rouge">markstat.docx</code>, open
+it in Word, and create a style called Indented, inheriting from the
+Normal paragraph style, but setting Indentation Left and Right, for
+example to 1 (inch) each. Save the reference document. You can now
+include an indented paragraph in your Word document by coding</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>::: {custom-style="Indented"}
+    The text here will be *indented* in the Word document. This works  because 
+    we are using a customized reference document that defines this custom style.
+:::
+</code></pre></div></div>
+
+<p>This uses Pandoc 2.0's new syntax for text blocks, similar to code
+fences but using colons. Inside the colon fences you may use Markdown
+syntax as usual, as I did with the word <em>indented</em>, which will appear in
+italics.</p>
+
+<p><strong>Underline</strong>. Markdown has no syntax for underline. When you are
+generating HTML you can always use the <code class="language-plaintext highlighter-rouge">&lt;u&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;/u&gt;</code> tags, as Pandoc
+(and indeed all Markdown processors) pass HTML raw input straight to the
+output. A <code class="language-plaintext highlighter-rouge">markstat</code> built-in extension intercepts these tags for
+<code class="language-plaintext highlighter-rouge">latex</code> and <code class="language-plaintext highlighter-rouge">docx</code> formats and translates them appropriately, in the
+case of Word by using a custom style. This means that you can use
+underline tags in all three output formats.</p>
+
+<h2 id="stata-15">Stata 15</h2>
+
+<p>The comparison between <code class="language-plaintext highlighter-rouge">markstat</code> and the new tools in Stata 15 has been
+expanded to compare the <code class="language-plaintext highlighter-rouge">docx</code> option with <code class="language-plaintext highlighter-rouge">putdocx</code>, see <a href="stata15#7-word-documents">Word
+Documents</a>. There you will also find a link to an 
+example reproducing the output in the announcement of <code class="language-plaintext highlighter-rouge">putdocx</code>.</p>
+
+<p><small>New in <code class="language-plaintext highlighter-rouge">markstat</code> 2.0</small></p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

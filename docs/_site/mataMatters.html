@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="mata-matters">Mata Matters</h2>
+
+<p>Dynamic documents with Markdown and Stata may include Mata code as part 
+of a Stata block using the simple or strict syntax. It is even possible 
+to start a Mata session in one block, add a few comments or annotations, 
+and end the session in another block.</p>
+
+<p>Version 1.6 of <code class="language-plaintext highlighter-rouge">markstat</code> makes this even easier by extending the strict
+syntax to allow Mata blocks as well as inline Mata code. In both cases
+you simply use an <code class="language-plaintext highlighter-rouge">m</code> instead of an <code class="language-plaintext highlighter-rouge">s</code> in the code fence or inline
+code.</p>
+
+<p>I thought it would be fun to try to reproduce part of one of Bill
+Gould's <em>Mata Matters</em> columns, and I picked an excerpt from his column
+on subscripts. Here is the code. We start with a quiet block to enter
+the matrix <strong>X</strong>, and then take up the narrative from the article.</p>
+
+<div class="text-end"><code>mata.stmd</code></div>
+<pre>
+# Matta Matters (excerpt)
+
+From W. Gould (2007). Mata Matters: Subscripting. *The Stata Journal*,
+__7__(1):106-116. &lt;https://www.stata-journal.com/article.html?article=pr0028&gt;.
+
+```s/
+    clear mata
+    version 11
+    mata:
+        X = 4,  7, 9 \   
+            2, 12, 3 \ 
+            8,  8, 7 \  
+            3,  4, 1 \  
+            1,  7, 9 
+    end
+```
+
+This is a case of something difficult to program in Stata being trivial
+in Mata.  The following example is well worth understanding.
+
+```m
+    X
+    uniformseed(39483)
+    o = ceil(5*uniform(5,1))
+    o
+    Z = X[o,]
+    Z
+```
+
+Below I use these ideas to perform a bootstrap of the regression of mpg on weight
+and foreign, using the automobile data:
+
+```s
+    sysuse auto, clear
+    mata:
+        st_view(datay=., ., "mpg")
+        st_view(dataX=., ., tokens("weight foreign"))
+        n = rows(datay)
+        dataX = dataX, J(n, 1, 1)
+        N = 10000 // number of replications
+        uniformseed(47686)
+        b = J(N, 3, .)
+        for (i = 1; i &lt;= N; i++) {
+            o = ceil(n*uniform(n,1))
+            y = datay[o,]
+            X = dataX[o,]
+            b[i,] = (invsym(X'X)*X'y)'
+        }
+        variance(b)
+    end
+```
+
+These results are similar to those that would be produced in Stata by typing 
+`estat vce` after `bootstrap, reps(10000): regress mpg weight foreign`.
+
+</pre>
+
+<p>You can see the corresponding <a href="mata.html">HTML</a> and <a href="mata.pdf">PDF</a> output, 
+or even better, you could run it yourself using the commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>copy https://grodri.github.io/markstat/mata.stmd mata.stmd
+markstat using mata, strict
+</code></pre></div></div>
+
+<p>You may want to compare the output with the original <em>Stata Journal</em>
+article <a href="https://www.stata-journal.com/article.html?article=pr0028">available
+here</a>.</p>
+
+<p>When I first ran this script the results differed from the published
+output, even though the seed was the same. I thought something might
+have changed with Stata since the paper was written, and added a
+<code class="language-plaintext highlighter-rouge">version 11</code> statement to the script. The results then matched 
+exactly. And of course, the document was updated without the need to 
+cut and paste anything.</p>
+
+<p><small> Note: do not set <code class="language-plaintext highlighter-rouge">version 11</code> <em>before</em> running <code class="language-plaintext highlighter-rouge">markstat</code>, 
+as the command requires version 14 or higher and therefore will not
+run.  Setting the version inside the script, however, works fine,
+as long as the script does not rely on later features.</small></p>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

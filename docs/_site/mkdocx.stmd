@@ -1,0 +1,34 @@
+Create DOCX
+===========
+
+```s/
+    quietly sysuse auto, replace
+    quietly sum mpg
+```	
+
+`markstat` can add formatted text to a paragraph. You can *italicize*, 
+~~strikeout~~, underline,  [highlight]{custom-style="Highlight"} 
+and sub/super script~2~. Also, you can easily add Stata results to your 
+paragraph (mpg total = `s %8.2f r(sum)`)
+
+```s/
+    quietly histogram rep
+    quietly graph export hist.png, replace	
+```	
+![](hist.png){width="5in"}
+
+Embed the output from a regression command into your docx file.
+
+```s/
+    quietly regress mpg price
+    _coef_table
+```
+
+Embed the data in Stata's memory into a table in your docx file.
+
+```s/
+    quietly statsby Total=r(N) Average=r(mean) Max=r(max) Min=r(min), ///
+        by(foreign): summarize mpg
+    rename foreign Origin
+    list Origin Total Average Max Min, noobs
+```

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" style="position:relative; min-height:100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>markstat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="headroom.min.js"></script>
+  <style>
+  .navbar{
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(192,192,192,1);
+    box-shadow: 2px 2px 4px 0px rgba(192,192,192,1)    
+  }
+  /* make navbar links less subdued */
+  #navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+  }
+  #navbar .nav-link:hover, #navbar .nav-link.active {
+    color: white !important;
+  }
+  /* headroom */
+  .headroom {
+    will-change: transform;
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+  /* stata */
+  pre { 
+    font-family: "Lucida-Console" monospace;
+    border:1px solid #c0c0c0; padding:1ex 1em}
+    pre.stata {font-size:13px; line-height:13px}
+  </style>
+</head>
+<body style="margin-bottom:40px;">
+
+<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary me-auto sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" 
+    style="font-family:Montserrat,sans-serif; font-size:1.5rem;">
+    
+      mark<span style="color:red">down</span> stat<span  style="color:red">a</span>
+    
+    <!--
+    <span style="color:red;">mark</span>down <span style="color:red">stat</span>a
+    -->
+  </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="index">/</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="gettingStarted">Getting Started</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link active" 
+          href="documentation">Documentation</a></li>
+        
+        <li class="nav-item"><a 
+          class="nav-link " 
+          href="examples">Examples</a></li>
+                
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container mt-3" style="max-width:768px">
+
+<h2 id="stata-15-dyndoc-and-markstat">Stata 15: <code class="language-plaintext highlighter-rouge">dyndoc</code> and <code class="language-plaintext highlighter-rouge">markstat</code></h2>
+
+<p>Here is a comparison based on the first example in my paper “Literate Data Analysis with Stata and Markdown”
+available <a href="https://www.stata-journal.com/article.html?article=pr0067">here</a>.
+You’ll first see the equivalent script using Stata 15’s <code class="language-plaintext highlighter-rouge">dyndoc</code>, which produces the output shown <a href="dyndoc1.html">here</a>. (The style could be changed by including a header with a CSS file.)</p>
+
+<p>If you click on the <code class="language-plaintext highlighter-rouge">markstat</code> tab you will see the original script, using plain Stata and Markdown code with the simple indentation rule. 
+This produces the output shown <a href="dyndoc2.html">here</a>, which uses a built-in CSS. 
+(More complex examples requiring hiding commands would use the <code class="language-plaintext highlighter-rouge">strict</code> rule.) .</p>
+
+<p>IMHO the <code class="language-plaintext highlighter-rouge">markstat</code> version is closer to the spirit of Markdown, easy to read and easy to write, “without looking like it’s been marked up with tags or formatting instructions” (Gruber, 2004)</p>
+
+<ul class="nav nav-tabs">
+<li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#dyndoc">dyndoc</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#markstat">markstat</a></li>
+</ul>
+
+<div class="tab-content">
+<pre class="tab-pane active" id="dyndoc">
+&lt;&lt;dd_version: 1.0&gt;&gt;
+
+Stata Markdown
+==============
+
+Let us read the fuel efficiency data that is shipped with Stata
+
+~~~~
+&lt;<dd_do>&gt;
+sysuse auto, clear
+&lt;</dd_do>&gt;
+~~~~		
+
+To study how fuel efficiency depends on weight it is useful to
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"
+
+~~~~
+&lt;<dd_do>&gt;
+gen gphm = 100/mpg
+&lt;</dd_do>&gt;
+~~~~		
+
+We then obtain a more linear relationship
+
+~~~~
+&lt;<dd_do>&gt;
+twoway scatter gphm weight || lfit gphm weight ///
+    , ytitle(Gallons per Mile) legend(off)
+&lt;</dd_do>&gt;
+~~~~		
+    
+	
+&lt;&lt;dd_graph: saving(auto.png) width(500) replace&gt;&gt;
+
+The regression equation estimated by OLS is
+
+~~~~
+&lt;<dd_do>&gt;
+regress gphm weight
+&lt;</dd_do>&gt;
+~~~~		
+	
+	
+Thus, a car that weighs 1,000 lbs more than another requires on
+average an extra &lt;&lt;dd_display: %5.1f 1000*_b[weight]&gt;&gt; gallons to travel 
+100 miles.
+
+That's all for now!
+
+</pre>
+<pre class="tab-pane" id="markstat">
+Stata Markdown
+==============
+
+Let us read the fuel efficiency data that is shipped with Stata
+
+    sysuse auto, clear
+
+To study how fuel efficiency depends on weight it is useful to
+transform the dependent variable from "miles per gallon" to
+"gallons per 100 miles"
+
+    gen gphm = 100/mpg
+
+We then obtain a more linear relationship
+
+    twoway scatter gphm weight || lfit gphm weight ///
+        , ytitle(Gallons per Mile) legend(off)
+    graph export auto.png, width(500) replace
+
+![Fuel Efficiency](auto.png)
+
+The regression equation estimated by OLS is
+
+    regress gphm weight
+	
+Thus, a car that weighs 1,000 lbs more than another requires on
+average an extra `s %5.1f 1000*_b[weight]` gallons to travel 
+100 miles.
+
+That's all for now!
+
+</pre>
+</div>
+
+
+</div>
+<script>
+  var nav = document.getElementById("navbar");
+  var headroom = new Headroom(nav);
+  headroom.init();
+</script>
+<footer class="text-center bg-primary" style="color:white; width:100%;position:absolute; bottom:0">
+  &copy; 2022 Germ&aacute;n Rodr&iacute;guez, Princeton University
+</footer>

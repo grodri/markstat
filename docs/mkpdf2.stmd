@@ -1,0 +1,39 @@
+---
+header-includes:
+ - \usepackage{xcolor}
+---
+
+Create PDF
+==========
+
+```s/
+	quietly sysuse auto, replace	
+	quietly sum mpg
+	local sum = r(sum)
+	quietly histogram rep
+	quietly graph export hist.png, replace	
+```
+	
+`markstat` can add formatted text to a paragraph. You can *italicize*,
+~~strikeout~~, sub/super script~2~ and change background color 
+\colorbox{blue!30}{bgcolor}.
+Also, you can easily add Stata results to your paragraph 
+(mpg total = `s %4.2f `sum'`)
+
+![Frequency of Repairs](hist.png)
+
+Embeb the output from a regression command into your pdf file.
+
+```s/
+	quietly regress mpg price
+	_coef_table
+```
+
+Embeb the data in Stata's memory into a table in your pdf file.
+
+```s/
+	quietly statsby Total=r(N) Average=r(mean) Max=r(max) Min=r(min), ///
+		by(foreign): summarize mpg
+	rename foreign Origin
+	list Origin Total Average Max Min, noobs
+```	
