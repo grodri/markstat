@@ -51,7 +51,7 @@ tryCatch(library("haven"),
     finally = library("haven"))
 ```
 
-For a more extensive example, see this [page](srtabs), which uses
+For a more extensive example, see this [page](stata-r-tabs), which uses
 Bootstrap tabs to switch between Stata and R in a Cox regression.
 
 ### Reference

@@ -68,7 +68,7 @@ The `.do` file is just plain Stata. We insert a comment of the form `//_n` to ma
 
 The next step is to *weave* together the Markdown and Stata output, using the information in the placeholders and markers to know where everything goes. The exact sequence of steps depends on the output format, but is transparent to you.
 
-We rely on Pandoc to translate Markdown to HTML or LaTeX and to generate a Word document. To produce PDF output via LaTeX the command will then run a LaTeX-to-PDF converter. See the [Getting Started](GettingStarted#latex) section for installation help.
+We rely on Pandoc to translate Markdown to HTML or LaTeX and to generate a Word document. To produce PDF output via LaTeX the command will then run a LaTeX-to-PDF converter. See the [Getting Started](gettingStarted#latex) section for installation help.
 
 The script file may be edited using Stata’s code editor, which has the advantage that you can select and run your Stata code to check that it works, or to examine results while you are authoring the narrative.
 
@@ -85,7 +85,7 @@ The only required argument is the name of the script file. This must have extens
 
 If you are producing HTML and do not have complex mathematical equations, you don’t need any of the options, so let me give you just a brief summary here:
 
-- `pdf` is used if you want to generate a PDF document, which we do via LaTeX, so this option requires additional tooling as explained in [Getting Started](GettingStarted).
+- `pdf` is used if you want to generate a PDF document, which we do via LaTeX, so this option requires additional tooling as explained in [Getting Started](gettingStarted).
 
 - `docx` is used to generate a Word document instead. Just like that!
 
@@ -115,7 +115,7 @@ Gruber's [Markdown: Basics](https://daringfireball.net/projects/markdown/basics)
 
 The `markstat` command uses John MacFarlane's [Pandoc](https://pandoc.org) to 
 convert Markdown to HTML or LaTeX, so you first need to install this converter 
-as explained in [Getting Started](GettingStarted).
+as explained in [Getting Started](gettingStarted).
 
 In Markdown you create a heading by "underlining" the title with `===` for level 1 and `---` for level 2. You can also define a heading at levels one to six by starting a line with one to six hashmarks, as in `### A level 3 heading`.
 
@@ -176,7 +176,7 @@ happy, so the last line would be <code>date: "`s c(current_date)`"</code>.
 
 An important advantage of the YAML format is that it allows us to include other
 information for Pandoc, for example the name of a bibliography file used to resolve citations as explained [here](citations), or an abstract to be used in PDF documents 
-via LaTeX. For an example using both features, see the metadata for the original `markstat` paper [here](markstatpaper).
+via LaTeX. For an example using both features, see the metadata for the original `markstat` paper [here](markstat).
 
 Pandoc 2.0 and higher requires HTML documents to have a title, and issues a warning if the title is missing.
 

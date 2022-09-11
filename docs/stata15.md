@@ -143,7 +143,7 @@ default Chicago style as
 
 For a quick example see [citations](citations). A more extended
 example is provided by my Stata Journal paper introducing
-\`markstat\[\^1\]\]. Check out [this page](mkstpaper) for access 
+\`markstat\[\^1\]\]. Check out [this page](markstat) for access 
 to the source code of the paper and the BibTeX database used to resolve 
 the references, as well as the resulting HTML and PDF versions.
 
@@ -178,7 +178,7 @@ A comparison of `markstat` with `putpdf` using the example in the Stata
 announcement may be found [here](putpdf).
 
 For longer examples, you can see both the input script and the HTML and
-PDF output for my papers on the [wfs](wfsx) and [markstat](mkstpaper)
+PDF output for my papers on the [wfs](wfsx) and [markstat](markstat)
 commands, as well as the `markstat` version of my [Stata
 tutorial](tutorial).
 

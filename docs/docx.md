@@ -11,7 +11,7 @@ generate HTML or PDF via LaTeX. Here\'s the example in my [SJ 17-3
 article](https://www.stata-journal.com/article.html?article=pr0067),
 expanded to use metadata and inline code.
 
-<div class="text-center"><code>fuel.stmd</code></div>
+<div class="text-end"><code>fuel.stmd</code></div>
 ~~~~
 {% include_relative fuel.stmd %}
 ~~~~

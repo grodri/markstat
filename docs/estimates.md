@@ -18,9 +18,7 @@ to produce a dynamic report. Here is the input:
 ~~~~
 
 And this is how this is rendered by the command
-`markstat using estimates, strict`. Don\'t forget to specify the
-`strict` option.
-
+`markstat using estimates, strict`.
 
 <div class="text-end"><code>esttab.html</code></div>
 <iframe src="esttab.html" class="border mb-3" width="100%" scrolling="no"></iframe>
