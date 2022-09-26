@@ -7,32 +7,44 @@ The Stata Tutorial
 ==================
 
 In July of 2017 I updated the *Stata Tutorial* for version 15, and it
-seemed a good time to convert it to a Stata Markdown script to be
-processed with `markstat`. In September of 2019 I updated it again, this
-time for version 16. A big advantage of using `markstat` is that it was
-very easy to update the tutorial, and I could generate a PDF file via
-LaTeX from the same script used for HTML. 
+seemed a good time to convert it to a `markstat` script. In later years
+I updated it for Stata 16 and then Stata 17. A big advantage of using
+`markstat` is that it was very easy to update the tutorial, and I could
+generate a PDF file via LaTeX from the same script used for HTML.
 
-The links below provide access to the `markstat` script, the 
-bibliography file, and an ancillary file used for PDF output as
-explained below. 
-The published HTML and PDF files are also linked below.
+By the time I did the latest update I was in the process of putting
+all the Stata and R code from my website in GitHub, starting with the
+tutorial. The links below will take you to the source code and
+supporting files in GitHub, and the published HTML and PDF versions
+on my website.
 
-- [Markstat](stataTutorial.stmd)
-- [bibliography](stataTutorial.bib)
-- [tweaks](tweaks.tex)
-
+- [Markstat](https://github.com/grodri/websrc/tree/main/stata)
 - [HTML](https://data.princeton.edu/stata)
 - [PDF](https://data.princeton.edu/stata/tutorial.pdf)
 
-If you are interested in running the script yourself, note that you need 
-to have  the file `_gpnupt.ado` available in the working directory or
-your personal ado folder, as it is used in one of the examples. 
-The file can be downloaded [here](_gpnupt.ado) or copied and
-pasted from Section 4.3.6 of the tutorial. 
-To generate PDF you will also need the file `tweaks.tex` to
-match the style I used. The following notes may also be of interest
-in reproducing the output.
+The repository has a separate file for each section of the tutorial,
+but also a combined file called `tutorial.stmd` with all the sections.
+If you are interested in reproducing the output the following notes
+may be of interest.
+
+Downloading Files
+-----------------
+
+If you are familiar with GitHub you can just clone the depository.
+Alternatively, the following Stata commands will download all the
+files needed to reproduce the PDF.
+
+```
+local repo https://raw.githubusercontent.com/grodri/websrc/main/stata/
+foreach file in tutorial.stmd tutorial.bib icon17.png stata17.png ///
+    stata17doc.png scheme-grlog.scheme _gpnupt.ado tweaks.tex {
+    copy `repo'/file .        
+}
+```
+The main files are the `markstat` script and bibliography. The introduction
+uses three images, the graphics section a custom scheme, and the programming
+section an `egen` extension.  To match exactly the style in the published
+PDF you also need `tweaks.tex` as discussed below.
 
 The Input Script
 ----------------
@@ -63,14 +75,14 @@ in
 The website uses the Bootstrap framework, and the two classes,
 `img-responsive` and `center-block` ensure that the figure is centered
 and displays well in devices of varying sizes. One exception is an image
-used to highlight version 16, where I used an `img` tag so it appears
+used to highlight version 17, where I used an `img` tag so it appears
 only in the HTML version. Another is the screen capture of the Stata
 interface, which I coded so it would appear in natural size in HTML and
 using the full page width in LaTeX, by coding
 
 ```
-<img src="stata16.png" class="img-responsive center-block"/>
-\includegraphics[width=\linewidth]{stata16.png}
+<img src="stata17.png" class="img-responsive center-block"/>
+\includegraphics[width=\linewidth]{stata17.png}
 ```
 
 This takes advantage of the fact that Pandoc will pass along HTML and
@@ -100,7 +112,8 @@ decided to add a few more and collect them in a file called
 ---
 title: Stata Tutorial 
 author: Germán Rodríguez
-date: September 2019
+date: September 2022
+lang: en-GB
 header-includes:
   - \input{tweaks.tex}
 bibliography: tutorial.bib
@@ -129,10 +142,16 @@ These are just aesthetic changes that do not affect the content of the
 tutorial, but allow you to reproduce exactly the published file by
 simply typing `markstat using stataTutorial, pdf bib`.
 
+The `lang` entry in the YAML block is a hack to stop Pandoc/cite-proc
+from moving punctuation inside quotation marks. While this is standard
+American usage, I think it doesn't work well for computing. (For example
+Stata's label for `r(p25)` is "25th percentile", and most definitely
+not "25th percentile,".)
+
 Something else you may toy with when generating a PDF document is page
 breaks. Having looked at the document, however, I decided that the few
 cases where code or output was split across pages were alright and
 decided to let them be.
 
 *Note*. The *Stata Tutorial* was first published in 2006 and targeted
-version 9, which makes the current version the 8th edition.
+Stata 9, which makes the current version the 9th edition.
