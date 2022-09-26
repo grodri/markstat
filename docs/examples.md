@@ -57,8 +57,8 @@ The article introducing `markstat`, written of course using Markdown and
 Stata with `markstat`, updated to use the <u>bib</u>liography option.
 
 <a class="example" href="tutorial">The Stata Tutorial.</a> 
-The *Stata Tutorial*, which I converted to `markstat` for Stata version 15 
-in 2017 and updated to cover version 16 in 2019.
+Back in 2017 I converted the *Stata Tutorial* to a `markstat` script,
+targetting Stata 15. In later years I updated it for Stata 16 and then 17.
 
 <a class="example" href="docx">Dynamic Word Documents.</a> 
 Starting with version 2.0, `markstat` can generate Word documents from the
