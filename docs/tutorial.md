@@ -38,7 +38,7 @@ files needed to reproduce the PDF.
 local repo https://raw.githubusercontent.com/grodri/websrc/main/stata/
 foreach file in tutorial.stmd tutorial.bib icon17.png stata17.png ///
     stata17doc.png scheme-grlog.scheme _gpnupt.ado tweaks.tex {
-    copy `repo'/file .        
+    copy `repo'/`file' .        
 }
 ```
 The main files are the `markstat` script and bibliography. The introduction
