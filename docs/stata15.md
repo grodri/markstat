@@ -68,7 +68,7 @@ matters](mataMatters).
 
 ### 2. Nicer Output
 
-Compare the HTML output of dyndoc using the previous two commands
+Compare the HTML output of `dyndoc` using the previous two commands
 
 ```
 . sysuse auto, clear
@@ -81,7 +81,7 @@ Compare the HTML output of dyndoc using the previous two commands
          mpg |         74     21.2973    5.785503         12         41
 ```
 
-With the output from markstat
+With the output from `markstat`
 
 <pre class="stata">
 . sysuse auto, clear
@@ -104,7 +104,7 @@ Inline code in `dyndoc` uses a dynamic tag:
 
     The average fuel efficiency is <<dd_display: %4.2f `r(mean)'>>.
 
-The equivalent `markstat code` is a bit less obtrusive and easier to
+The equivalent `markstat` code is a bit less obtrusive and easier to
 type
 
     The average fuel efficiency is `s %4.2f r(mean)`.
@@ -142,10 +142,10 @@ default Chicago style as
 > (2): 97---111.
 
 For a quick example see [citations](citations). A more extended
-example is provided by my Stata Journal paper introducing
-\`markstat\[\^1\]\]. Check out [this page](markstat) for access 
-to the source code of the paper and the BibTeX database used to resolve 
-the references, as well as the resulting HTML and PDF versions.
+example is provided by my Stata Journal paper introducing `markstat`,
+Check out [this page](markstat) to access the source code of the paper,
+the BibTeX database used to resolve the references, and the resulting 
+HTML and PDF versions.
 
 ### 6. PDF Output
 
