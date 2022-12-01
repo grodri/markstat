@@ -26,7 +26,7 @@ The command `markstat using fuel` will generate a web page. Adding the
 generates a Word document instead. A screen capture of the output is
 shown below, or download the document [here](fuel.docx).
 
-<img src="docx-snip.png" class="img-responsive"/>
+<img src="docx-snip.png" class="img-fluid" />
 
 If you have a LaTeX installation, changing the option to `pdf` will
 generate a PDF file via LaTeX, as shown [here](fuel.pdf). 
