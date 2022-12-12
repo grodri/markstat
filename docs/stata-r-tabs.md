@@ -24,7 +24,8 @@ Header Includes
 The first thing to notice is that I use the Bootstrap framework. The
 easiest way to do this is to use "header-includes" to link to the
 necessary CSS and JavaScript files from a content distribution network
-(CDN). That's why the script starts with
+(CDN). I also tell search engines that this page is just a copy.
+That's why the script starts with
 
 <pre>
 ---
@@ -32,6 +33,7 @@ title: Cox Regression
 author: Germán Rodríguez
 date: 12 December 2017
 header-includes:
+ - %lt;link rel="canonical" href="https://grodri.github.io/survival/cox"/>
  - &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
  - &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  - &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
@@ -98,15 +100,18 @@ only to Stata.
 Figures
 -------
 
-This trick also works for images. If you want to include a Stata graph
-just add the `stata` class to the image. Do the same for R. I usually
-just add an `r` to the name of an R plot. For example the main
+This trick also works for images. If you want to include a Stata graph just 
+add the `stata` class to the image. Do the same for R using the `r` class.
+ I usually just add an `r` to the name of an R plot. For example the main
 Cox-Kaplan-Meier plot is called `coxkm.png` in the Stata version and
-`coxkmr.png` in the R version. To show these I coded
+`coxkmr.png` in the R version. To show these the code uses `.stata` 
+or `.r` to specify the class. (The `.img-responsive` code ensures that the
+image adapts to different device sizes, and `.img-center` centers it on
+the page.)
 
 ```
-![](coxkm.png){width="5in" .stata}
-![](coxkmr.png){width="5in" .r}
+![](coxkm.png){.img-responsive .img-center .stata}
+![](coxkmr.png){.img-responsive .img-center .r}
 ```
 
 Each plot will show only when the corresponding tab is selected.
@@ -118,22 +123,21 @@ fences and assign the language class to that:
 
 ```
 :::{.stata}
-![An Implicit Figure](coxkm.png){width="5in"}
+![An Implicit Figure](coxkm.png){.img-responsive .img-center}
 :::
 ```
 
 I did not use this technique in this example, as none of the images have
-Markdown captions. Instead, I added a CSS rule so all images would be
-centered.
+Markdown captions. 
 
 By the way, if you are wondering how I got the Stata plots to look like
-R\'s `ggplot2`, read about the `plottig` scheme in the *Stata Journal*
+R's `ggplot2`, read about the `plottig` scheme in the *Stata Journal*
 17-3 or type `search plottig`. And if you are wondering how I got
 generic grid plots in R to look somewhat like `ggplot2`, look at the
 `ggfy()` function in a quiet R block near the top of the script.
 
-That\'s it, really. Follow the links at the top to see the script and
-the resulting web page, which differs from the \"official\" page only on
-the surrounding \"chrome\".
+That's it, really. Follow the links at the top to see the script and
+the resulting web page, which differs from the "official" page only on
+the surrounding website "chrome".
 
 New in `markstat` 2.1

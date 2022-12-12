@@ -3,12 +3,13 @@ title: Cox Regression
 author: Germán Rodríguez
 date: 12 December 2017
 header-includes:
+ - <link rel="canonical" href="https://grodri.github.io/survival/cox"/>
  - <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
  - <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  - <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 ---
 
-::: {style="width:720px"}
+::: 
 
 We continue our analysis of the Gehan data by fitting a proportional hazards 
 model. This is the same dataset used as an example in Cox's original paper: 
@@ -44,13 +45,13 @@ I also create a dummy variable for `treated`.
 
 ```s
 	infile group weeks relapse using ///
-		https://data.princeton.edu/wws509/datasets/gehan.raw, clear
+		https://grodri.github.io/datasets/gehan.raw, clear
 	gen treated = group == 2
 	stset weeks, failure(relapse)
 ```
 	
 ```r
-	gehan <- read.table("https://data.princeton.edu/wws509/datasets/gehan.dat")
+	gehan <- read.table("https://grodri.github.io/datasets/gehan.dat")
 	names(gehan)
 	summarize(gehan, events = sum(relapse), exposure = sum(weeks))
 	gehan <- mutate(gehan, treated = as.numeric(group == "treated"))
@@ -282,8 +283,8 @@ I specified `df=2` because of the small sample size.]{.r}
 	ggfy(zph, df=2)
 	dev.off()
 ```
-![](phplot.png){.stata}	
-![](phplotr.png){.r}
+![](phplot.png){.img-responsive .img-center .stata}	
+![](phplotr.png){.img-responsive .img-center .r}
 
 The residuals show no time trend at all, showing that the treatment hazard ratio 
 is fairly constant over time. (We will confirm this result below with a plot of 
@@ -302,7 +303,6 @@ two groups.
 
 ```s
 	stcurve, surv at(treated=0) at(treated=1)
-	graph export coxsurv.png, width(500) replace
 ```
 
 It is instructive to compute these "by hand" and compare them with separate 
@@ -319,7 +319,7 @@ function.
 	    (scatter KM _t if treated, msymbol(circle_hollow)) /// KM treated
 		(scatter KM _t if !treated, msymbol(X))            /// KM base
 	   , legend(off) ///
-		title(Kaplan-Meier and Proportional Hazards Estimates)   
+		title(Kaplan-Meier and Proportional Hazards Estimates)
 	graph export coxkm.png, width(500) replace      
 ```
 
@@ -340,8 +340,9 @@ function.
 		scale_shape_manual(values = c(1, 4)) 
 	ggsave("coxkmr.png", width=500/72, height=400/72, dpi=72)     
 ```
-![](coxkm.png){.stata}
-![](coxkmr.png){.r}
+
+![](coxkm.png){.img-responsive .img-center .stata}
+![](coxkmr.png){.img-responsive .img-center .r}
 
 The figure looks just like Figure 1 in Cox's paper. If the purpose of the graph 
 is to check the proportional hazards assumption a much better alternative is to 
@@ -361,8 +362,8 @@ better at judging whether curves are parallel than whether they are proportional
 		geom_line() +   ylab("-log(-log(S(t)))")
 	ggsave("coxphplotr.png", width=500/72, height=400/72, dpi=72)
 ```
-![](coxphplot.png){.stata}
-![](coxphplotr.png){.r}
+![](coxphplot.png){.img-responsive .img-center .stata}
+![](coxphplotr.png){.img-responsive .img-center .r}
 
 The two lines look quite parallel indeed.
 

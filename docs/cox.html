@@ -23,7 +23,7 @@
       padding-top: 50px;
       padding-bottom: 50px;
       hyphens: auto;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       text-rendering: optimizeLegibility;
       font-kerning: normal;
     }
@@ -31,6 +31,9 @@
       body {
         font-size: 0.9em;
         padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
       }
     }
     @media print {
@@ -94,6 +97,7 @@
     pre code {
       padding: 0;
       overflow: visible;
+      overflow-wrap: normal;
     }
     .sourceCode {
      background-color: transparent;
@@ -135,23 +139,35 @@
     #TOC li {
       list-style: none;
     }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
     #TOC a:not(:hover) {
       text-decoration: none;
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <link rel="canonical" href="https://grodri.github.io/survival/cox"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 <style>
 /* CSS for Markstat 2.0 using Pandoc 2.0 */
 body{padding:14px 28px; max-width:45em;}
@@ -180,7 +196,7 @@ h1.title {text-align:center; margin-bottom:0}
 p.author, h2.author {font-style:italic; text-align:center;margin-top:4px;margin-bottom:0}
 p.date, h3.date {text-align:center;margin-top:4px; margin-bottom:0}
 /* Tables*/
-table { margin:auto; border-collapse:collapse; }
+table { margin: auto; border-collapse:collapse; }
 table caption { margin-bottom:1ex;}
 td {padding:0 0 0 0} /* override */
 table:not([class]) th { padding:4px 6px } 
@@ -198,8 +214,12 @@ table:not([class]) tbody:last-child tr:last-child td {border-bottom:1px solid bl
 <p class="author">Germán Rodríguez</p>
 <p class="date">12 December 2017</p>
 </header>
-<div style="width:720px">
-<p>We continue our analysis of the Gehan data by fitting a proportional hazards model. This is the same dataset used as an example in Cox’s original paper: Cox, D.R. (1972) Regression Models and Life tables, (with discussion) <em>Journal of the Royal Statistical Society</em>, <strong>34</strong>: 187–220.</p>
+<p>:::</p>
+<p>We continue our analysis of the Gehan data by fitting a proportional
+hazards model. This is the same dataset used as an example in Cox’s
+original paper: Cox, D.R. (1972) Regression Models and Life tables,
+(with discussion) <em>Journal of the Royal Statistical Society</em>,
+<strong>34</strong>: 187–220.</p>
 <ul class="nav nav-tabs">
 <li class="active">
 <a data-toggle="tab" href="#stata">Stata</a>
@@ -211,9 +231,11 @@ table:not([class]) tbody:last-child tr:last-child td {border-bottom:1px solid bl
 <p>
 </p>
 
-<p>The first task is to read <span class="stata">and <code>stset</code></span> the data. I also create a dummy variable for <code>treated</code>.</p>
+<p>The first task is to read <span class="stata">and
+<code>stset</code></span> the data. I also create a dummy variable for
+<code>treated</code>.</p>
 <pre class='stata'>. infile group weeks relapse using ///
->     https://data.princeton.edu/wws509/datasets/gehan.raw, clear
+>     https://grodri.github.io/datasets/gehan.raw, clear
 (42 observations read)
 
 . gen treated = group == 2
@@ -237,7 +259,7 @@ Observed time interval: (0, weeks]
                                      Earliest observed entry t =         0
                                           Last observed exit t =        35
 </pre>
-<pre class='r'>> gehan &lt;- read.table("https://data.princeton.edu/wws509/datasets/gehan.dat")
+<pre class='r'>> gehan &lt;- read.table("https://grodri.github.io/datasets/gehan.dat")
 > names(gehan)
 [1] "group"   "weeks"   "relapse"
 > summarize(gehan, events = sum(relapse), exposure = sum(weeks))
@@ -287,10 +309,27 @@ treated -1.5721    0.2076   0.4124 -3.812 0.000138
 Likelihood ratio test=16.35  on 1 df, p=5.261e-05
 n= 42, number of events= 30 
 </pre>
-<p><span class="stata">Stata reports hazard ratios unless you specify the option <code>nohr</code>.</span> <span class="r">R reports log-relative risks, but also exponentiates the coefficients to obtain hazard ratios.</span> We see that the treatment reduced the risk of relapse by almost 80% at any duration.</p>
+<p><span class="stata">Stata reports hazard ratios unless you specify
+the option <code>nohr</code>.</span> <span class="r">R reports
+log-relative risks, but also exponentiates the coefficients to obtain
+hazard ratios.</span> We see that the treatment reduced the risk of
+relapse by almost 80% at any duration.</p>
 <h2 id="handling-ties">Handling Ties</h2>
-<p>There are various options for handling ties. Cox’s original proposal relies on the discrete partial likelihood. A closely-related alternative due to Kalbfleisch and Prentice uses the marginal likelihood of the ranks. Both methods are computationally intensive. A good fast approximation is due to Efron, and a simpler and faster, though somewhat less accurate, method is due to Breslow and Peto. See the notes for details.</p>
-<p>In terms of our software, <span class="stata">Stata implements all four using the options <code>exactp</code>, <code>exactm</code>, <code>efron</code> and <code>breslow</code>. The default is <code>breslow</code> but I recommend you always use <code>efron</code>.</span> <span class="r">R implements all but the marginal likelihood, using the argument <code>ties</code> with possible values “efron”, “breslow”, and “exact”.</span> Let us compare them all.</p>
+<p>There are various options for handling ties. Cox’s original proposal
+relies on the discrete partial likelihood. A closely-related alternative
+due to Kalbfleisch and Prentice uses the marginal likelihood of the
+ranks. Both methods are computationally intensive. A good fast
+approximation is due to Efron, and a simpler and faster, though somewhat
+less accurate, method is due to Breslow and Peto. See the notes for
+details.</p>
+<p>In terms of our software, <span class="stata">Stata implements all
+four using the options <code>exactp</code>, <code>exactm</code>,
+<code>efron</code> and <code>breslow</code>. The default is
+<code>breslow</code> but I recommend you always use
+<code>efron</code>.</span> <span class="r">R implements all but the
+marginal likelihood, using the argument <code>ties</code> with possible
+values “efron”, “breslow”, and “exact”.</span> Let us compare them
+all.</p>
 <pre class='stata'>. estimates store breslow
 
 . quietly stcox treated, efron
@@ -319,17 +358,32 @@ n= 42, number of events= 30
           breslow     efron     exact
 treated -1.509191 -1.572125 -1.628244
 </pre>
-<p>As you can see, Efron’s approximation is closer to the exact partial likelihood than Breslow’s. <span class="stata">The marginal likelihood is even closer.</span> Cox reported a log-likelihood of -1.65 in his paper, which he obtained by evaluating the likelihood in a grid of points. The more exact calculations here yield -1.63, so he did pretty well by hand (see page 197 in the paper).</p>
+<p>As you can see, Efron’s approximation is closer to the exact partial
+likelihood than Breslow’s. <span class="stata">The marginal likelihood
+is even closer.</span> Cox reported a log-likelihood of -1.65 in his
+paper, which he obtained by evaluating the likelihood in a grid of
+points. The more exact calculations here yield -1.63, so he did pretty
+well by hand (see page 197 in the paper).</p>
 <h2 id="proportionality-of-hazards">Proportionality of Hazards</h2>
-<p>One way to test proportionality of hazards is to introduce interactions with duration. In his original paper Cox tried a linear interaction with time. We will do the same, except that he worked with <em>t - 10</em> to achieve more orthogonality and we will use <em>t</em>.</p>
+<p>One way to test proportionality of hazards is to introduce
+interactions with duration. In his original paper Cox tried a linear
+interaction with time. We will do the same, except that he worked with
+<em>t - 10</em> to achieve more orthogonality and we will use
+<em>t</em>.</p>
 <section id="statas-tvc-and-texp" class="stata">
 <h3>Stata’s tvc() and texp()</h3>
-<p>Stata makes it very easy to introduce interactions with time by providing two options:</p>
+<p>Stata makes it very easy to introduce interactions with time by
+providing two options:</p>
 <ol type="1">
-<li><p><code>tvc(varlist)</code>, to specify the variable(s) we want to interact with time, and</p></li>
-<li><p><code>texp(expression)</code>, to specify a function of time <code>_t</code>, typically just time, <code>texp(_t)</code>, or log-time, <code>texp(log(_t)</code>.</p></li>
+<li><p><code>tvc(varlist)</code>, to specify the variable(s) we want to
+interact with time, and</p></li>
+<li><p><code>texp(expression)</code>, to specify a function of time
+<code>_t</code>, typically just time, <code>texp(_t)</code>, or
+log-time, <code>texp(log(_t)</code>.</p></li>
 </ol>
-<p>Stata will then create a variable equal to the product of the variable specified in <code>tvc()</code> by the time expression specified in <code>texp()</code> and add it to the model.</p>
+<p>Stata will then create a variable equal to the product of the
+variable specified in <code>tvc()</code> by the time expression
+specified in <code>texp()</code> and add it to the model.</p>
 <p>Let us use this technique to interact treatment and time</p>
 <pre class='stata'>. stcox treated, tvc(treated) texp(_t) efron
 
@@ -363,8 +417,12 @@ tvc          │
 ─────────────┴────────────────────────────────────────────────────────────────
 Note: Variables in tvc equation interacted with _t.
 </pre>
-<p>We see that there’s no evidence that the treatment effect changes linearly with time. BTW we didn’t really have to specify <code>texp(_t)</code> because that’s the default.</p>
-<p>Another possibility is to allow different treatment effects at early and late durations, say before and after 10 weeks. This is easily done by changing the time expression:</p>
+<p>We see that there’s no evidence that the treatment effect changes
+linearly with time. BTW we didn’t really have to specify
+<code>texp(_t)</code> because that’s the default.</p>
+<p>Another possibility is to allow different treatment effects at early
+and late durations, say before and after 10 weeks. This is easily done
+by changing the time expression:</p>
 <pre class='stata'>. stcox treated, tvc(treated) texp(_t > 10) efron
 
         Failure _d: relapse
@@ -397,10 +455,16 @@ tvc          │
 ─────────────┴────────────────────────────────────────────────────────────────
 Note: Variables in tvc equation interacted with _t>10.
 </pre>
-<p>The point estimates indicate a 73% reduction in risk in the first ten weeks and an additional 44% reduction after ten weeks, for a total of 85% in the later period. However, the difference in treatment effects between the two periods is not significant.</p>
+<p>The point estimates indicate a 73% reduction in risk in the first ten
+weeks and an additional 44% reduction after ten weeks, for a total of
+85% in the later period. However, the difference in treatment effects
+between the two periods is not significant.</p>
 </section>
 <h3 id="splitting-at-failures">Splitting at Failures</h3>
-<p>Because only times with observed failures contribute to the partial likelihood, we can introduce arbitrary interactions by splitting the data at each failure time. As a sanity check, we verify that we obtain the same estimate as before</p>
+<p>Because only times with observed failures contribute to the partial
+likelihood, we can introduce arbitrary interactions by splitting the
+data at each failure time. As a sanity check, we verify that we obtain
+the same estimate as before</p>
 <pre class='stata'>.  gen id = _n  // need an id variable to split
 
 . streset, id(id)
@@ -443,7 +507,12 @@ Observed time interval: (weeks[_n-1], weeks]
   treated 
 -1.572125 
 </pre>
-<p>We now introduce a linear interaction with time using our dummy variable for <code>treated</code>. <span class="r">(You could specify the model as <code>group * t0</code>. R will omit <code>t0</code> because it is implicit in the baseline hazard and complain that the model matrix is singular, but the results will be correct. My approach is a bit cleaner.)</span></p>
+<p>We now introduce a linear interaction with time using our dummy
+variable for <code>treated</code>. <span class="r">(You could specify
+the model as <code>group * t0</code>. R will omit <code>t0</code>
+because it is implicit in the baseline hazard and complain that the
+model matrix is singular, but the results will be correct. My approach
+is a bit cleaner.)</span></p>
 <pre class='stata'>. stcox treated c.treated#c._t, efron
 
         Failure _d: relapse
@@ -466,13 +535,14 @@ Time at risk    = 541
                                                         LR chi2(2)    =  16.35
 Log likelihood = -85.008326                             Prob > chi2   = 0.0003
 
-───────────────┬────────────────────────────────────────────────────────────────
-            _t │ Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
-───────────────┼────────────────────────────────────────────────────────────────
-       treated │   .2057005   .1595878    -2.04   0.042     .0449626    .9410648
-               │
-c.treated#c._t │   1.000865   .0617494     0.01   0.989       .88687    1.129514
-───────────────┴────────────────────────────────────────────────────────────────
+─────────────┬────────────────────────────────────────────────────────────────
+          _t │ Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+─────────────┼────────────────────────────────────────────────────────────────
+     treated │   .2057005   .1595878    -2.04   0.042     .0449626    .9410648
+             │
+   c.treated#│
+        c._t │   1.000865   .0617494     0.01   0.989       .88687    1.129514
+─────────────┴────────────────────────────────────────────────────────────────
 
 . lrtest ph .
 
@@ -512,9 +582,15 @@ Score (logrank) test = 17.69  on 2 df,   p=1e-04
 > c( logLik(cmx), logLik(cm))
 [1] -85.00833 -85.00842
 </pre>
-<p>We get a Wald test for the interaction term of z = 0.01 and twice a difference in log-likelihoods of 0.00, so clearly there is no evidence of an interaction between treatment and time at risk. <span class="stata">Note that these are exactly the same results we got with <code>tvc()</code> and <code>texp()</code></span></p>
+<p>We get a Wald test for the interaction term of z = 0.01 and twice a
+difference in log-likelihoods of 0.00, so clearly there is no evidence
+of an interaction between treatment and time at risk. <span
+class="stata">Note that these are exactly the same results we got with
+<code>tvc()</code> and <code>texp()</code></span></p>
 <h2 id="split-at-10">Split at 10</h2>
-<p>As an alternative we could allow different treatment effects before and after 10 weeks. We could use the current dataset, but all we really need is to split at 10, so we’ll do just that:</p>
+<p>As an alternative we could allow different treatment effects before
+and after 10 weeks. We could use the current dataset, but all we really
+need is to split at 10, so we’ll do just that:</p>
 <pre class='stata'>. stsplit dur, at(10)
 (21 observations (episodes) created)
 
@@ -546,13 +622,14 @@ Time at risk    = 541
                                                         LR chi2(2)    =  16.89
 Log likelihood = -84.740124                             Prob > chi2   = 0.0002
 
-────────────────────┬────────────────────────────────────────────────────────────────
-                 _t │ Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
-────────────────────┼────────────────────────────────────────────────────────────────
-            treated │   .2702224   .1426515    -2.48   0.013     .0960215    .7604559
-                    │
-c.treated#c.after10 │   .5475566   .4505425    -0.73   0.464     .1091542    2.746741
-────────────────────┴────────────────────────────────────────────────────────────────
+─────────────┬────────────────────────────────────────────────────────────────
+          _t │ Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+─────────────┼────────────────────────────────────────────────────────────────
+     treated │   .2702224   .1426515    -2.48   0.013     .0960215    .7604559
+             │
+   c.treated#│
+   c.after10 │   .5475566   .4505425    -0.73   0.464     .1091542    2.746741
+─────────────┴────────────────────────────────────────────────────────────────
 
 . lrtest ph .
 
@@ -599,10 +676,25 @@ Score (logrank) test = 18.91  on 2 df,   p=8e-05
 > chisq &lt;- 2*(logLik(cm10) - logLik(cm)); chisq
 'log Lik.' 0.5366016 (df=2)
 </pre>
-<p>The Wald test now yields -0.73 (a chi-squared of 0.53), and the likelihood ratio test concurs, with a chi-squared of 0.54 on one d.f. The risk ratio is a bit larger after 10 weeks, but the difference is still not significant. <span class="stata">Note that these are exactly the same results we got with <code>tvc()</code> and <code>texp()</code>.</span></p>
+<p>The Wald test now yields -0.73 (a chi-squared of 0.53), and the
+likelihood ratio test concurs, with a chi-squared of 0.54 on one d.f.
+The risk ratio is a bit larger after 10 weeks, but the difference is
+still not significant. <span class="stata">Note that these are exactly
+the same results we got with <code>tvc()</code> and
+<code>texp()</code>.</span></p>
 <h2 id="schoenfeld-residuals">Schoenfeld Residuals</h2>
-<p>Another way to check for proportionality of hazards is to use Schoenfeld residuals (and their scaled counterparts). You can obtain an overall test using the Schoenfeld residuals, or a variable-by-variable test based on the scaled variant. In this case with just one predictor there is only one test, but we’ll see later an example with several predictors.</p>
-<p>Stata and R offer several possible transformations of time for the test, including a user-specified function, but chose different defaults. In Stata the default is time, but one of the options is <code>km</code> for the Kaplan-Meier estimate of overall survival. In R the default transform is “km” for the K-M estimate, but one of the options is “identity”.</p>
+<p>Another way to check for proportionality of hazards is to use
+Schoenfeld residuals (and their scaled counterparts). You can obtain an
+overall test using the Schoenfeld residuals, or a variable-by-variable
+test based on the scaled variant. In this case with just one predictor
+there is only one test, but we’ll see later an example with several
+predictors.</p>
+<p>Stata and R offer several possible transformations of time for the
+test, including a user-specified function, but chose different defaults.
+In Stata the default is time, but one of the options is <code>km</code>
+for the Kaplan-Meier estimate of overall survival. In R the default
+transform is “km” for the K-M estimate, but one of the options is
+“identity”.</p>
 <pre class='stata'>. quietly stcox treated, efron
 
 . estat phtest
@@ -622,7 +714,13 @@ Time function: Analysis time
 treated 0.000197  1 0.99
 GLOBAL  0.000197  1 0.99
 </pre>
-<p>The test shows that there is no evidence against the proportional hazards assumption. If there had been, we could get a hint of the nature of the time dependence by plotting the (scaled) residuals against time and using a smoother to glean the trend, if any. <span class="r">In R the <code>cox.zph</code> class has a <code>plot()</code> method which uses a spline smoother. I specified <code>df=2</code> because of the small sample size.</span></p>
+<p>The test shows that there is no evidence against the proportional
+hazards assumption. If there had been, we could get a hint of the nature
+of the time dependence by plotting the (scaled) residuals against time
+and using a smoother to glean the trend, if any. <span class="r">In R
+the <code>cox.zph</code> class has a <code>plot()</code> method which
+uses a spline smoother. I specified <code>df=2</code> because of the
+small sample size.</span></p>
 <pre class='stata'>. estat phtest, plot(treated)
 
 . graph export phplot.png, width(500) replace
@@ -634,17 +732,29 @@ file phplot.png saved as PNG format
 null device 
           1 
 </pre>
-<p><img src="phplot.png" class="stata" /><br />
-<img src="phplotr.png" class="r" /></p>
-<p>The residuals show no time trend at all, showing that the treatment hazard ratio is fairly constant over time. (We will confirm this result below with a plot of cumulative hazards that provides more direct evidence.)</p>
+<p><img src="phplot.png"
+class="img-responsive img-center stata" /><br />
+<img src="phplotr.png" class="img-responsive img-center r" /></p>
+<p>The residuals show no time trend at all, showing that the treatment
+hazard ratio is fairly constant over time. (We will confirm this result
+below with a plot of cumulative hazards that provides more direct
+evidence.)</p>
 <h2 id="baseline-survival">Baseline Survival</h2>
-<p>The emphasis in the Cox model is on hazard ratios, but one can calculate a Kaplan-Meier or a Nelson-Aalen estimate of the baseline survival, as shown in the notes. The baseline is defined as the case where all covariate values are zero, and this may not make sense in your data. A popular alternative is to estimate the “baseline” at average values of all covariates. In our case a much better approach is to estimate and plot the estimated survival functions for the two groups. <span class="stata">Stata makes this very easy via the <code>stcurve</code> command</span></p>
+<p>The emphasis in the Cox model is on hazard ratios, but one can
+calculate a Kaplan-Meier or a Nelson-Aalen estimate of the baseline
+survival, as shown in the notes. The baseline is defined as the case
+where all covariate values are zero, and this may not make sense in your
+data. A popular alternative is to estimate the “baseline” at average
+values of all covariates. In our case a much better approach is to
+estimate and plot the estimated survival functions for the two groups.
+<span class="stata">Stata makes this very easy via the
+<code>stcurve</code> command</span></p>
 <pre class='stata'>. stcurve, surv at(treated=0) at(treated=1)
-
-. graph export coxsurv.png, width(500) replace
-file coxsurv.png saved as PNG format
 </pre>
-<p>It is instructive to compute these “by hand” and compare them with separate Kaplan-Meier estimates for each group, which I will plot using different symbols for treated and controls. The plots connect the point estimates using a step function.</p>
+<p>It is instructive to compute these “by hand” and compare them with
+separate Kaplan-Meier estimates for each group, which I will plot using
+different symbols for treated and controls. The plots connect the point
+estimates using a step function.</p>
 <pre class='stata'>. predict S0, basesurv            // control (not mean!)
 
 . gen S1 = S0^exp(_b[treated])    // treated
@@ -656,7 +766,7 @@ file coxsurv.png saved as PNG format
 >     (scatter KM _t if treated, msymbol(circle_hollow)) /// KM treated
 >     (scatter KM _t if !treated, msymbol(X))            /// KM base
 >    , legend(off) ///
->     title(Kaplan-Meier and Proportional Hazards Estimates)   
+>     title(Kaplan-Meier and Proportional Hazards Estimates)
 
 . graph export coxkm.png, width(500) replace      
 file coxkm.png saved as PNG format
@@ -677,8 +787,15 @@ file coxkm.png saved as PNG format
 +     scale_shape_manual(values = c(1, 4)) 
 > ggsave("coxkmr.png", width=500/72, height=400/72, dpi=72)     
 </pre>
-<p><img src="coxkm.png" class="stata" /> <img src="coxkmr.png" class="r" /></p>
-<p>The figure looks just like Figure 1 in Cox’s paper. If the purpose of the graph is to check the proportional hazards assumption a much better alternative is to plot the log-log transformation of the survival function, namely -log(-log(S(t)), against log(t) for each group. Under the proportional hazards assumption the resulting curves should be parallel. This plot is useful because the eye is much better at judging whether curves are parallel than whether they are proportional.</p>
+<p><img src="coxkm.png" class="img-responsive img-center stata" /> <img
+src="coxkmr.png" class="img-responsive img-center r" /></p>
+<p>The figure looks just like Figure 1 in Cox’s paper. If the purpose of
+the graph is to check the proportional hazards assumption a much better
+alternative is to plot the log-log transformation of the survival
+function, namely -log(-log(S(t)), against log(t) for each group. Under
+the proportional hazards assumption the resulting curves should be
+parallel. This plot is useful because the eye is much better at judging
+whether curves are parallel than whether they are proportional.</p>
 <pre class='stata'>. stphplot, by(treated) legend(off) title(Plot of -log(-log(S(t))))
 
         Failure _d: relapse
@@ -693,9 +810,10 @@ file coxphplot.png saved as PNG format
 +     geom_line() +   ylab("-log(-log(S(t)))")
 > ggsave("coxphplotr.png", width=500/72, height=400/72, dpi=72)
 </pre>
-<p><img src="coxphplot.png" class="stata" /> <img src="coxphplotr.png" class="r" /></p>
+<p><img src="coxphplot.png" class="img-responsive img-center stata" />
+<img src="coxphplotr.png" class="img-responsive img-center r" /></p>
 <p>The two lines look quite parallel indeed.</p>
-</div>
+<p>:::</p>
 <style>
 img {display:block; margin:auto;}
 header {margin-bottom: 12px;}
