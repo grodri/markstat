@@ -33,7 +33,7 @@ title: Cox Regression
 author: Germán Rodríguez
 date: 12 December 2017
 header-includes:
- - %lt;link rel="canonical" href="https://grodri.github.io/survival/cox"/>
+ - &lt;link rel="canonical" href="https://grodri.github.io/survival/cox"/>
  - &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
  - &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  - &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
