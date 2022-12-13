@@ -74,9 +74,8 @@ $(function () {
 </script>
 ```
 
-I just lifted these two fragments from a course page, where they have
-been in use for a long time. The only change is the use of `stata` and
-`r` classes here. These bits can be saved in separate files and injected
+I just lifted these two fragments from a course page, where they have been 
+in use for a long time. These bits can be saved in separate files and injected
 using `.include`. This is all you need for the tabs to work.
 
 Text
@@ -101,20 +100,20 @@ Figures
 -------
 
 This trick also works for images. If you want to include a Stata graph just 
-add the `stata` class to the image. Do the same for R using the `r` class.
- I usually just add an `r` to the name of an R plot. For example the main
-Cox-Kaplan-Meier plot is called `coxkm.png` in the Stata version and
-`coxkmr.png` in the R version. To show these the code uses `.stata` 
-or `.r` to specify the class. (The `.img-responsive` code ensures that the
-image adapts to different device sizes, and `.img-center` centers it on
-the page.)
+add the `stata` class to the image. Do the same for R using the `r` class,
+as shown in the example below.
+I often use the same name for the Stata and R plots, appending an `r` for
+the R version. For example the main Cox-Kaplan-Meier plot is called `coxkm.png` 
+in the Stata version and `coxkmr.png` in the R version. 
 
 ```
-![](coxkm.png){.img-responsive .img-center .stata}
-![](coxkmr.png){.img-responsive .img-center .r}
+![](coxkm.png){.stata .img-responsive .img-center}
+![](coxkmr.png){.r .img-responsive .img-center}
 ```
 
-Each plot will show only when the corresponding tab is selected.
+Each plot will show only when the corresponding tab is selected. I also
+use the `img-responsive` class to make the image responsive to different
+device sizes, and `img-center` to center it.
 
 If an image is in a paragraph by itself and has a caption, Pandoc will
 wrap it in `<figure>` tags and add a `<figcaption>`. To ensure that all

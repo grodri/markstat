@@ -9,7 +9,7 @@ header-includes:
  - <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 ---
 
-::: 
+::: {.container}
 
 We continue our analysis of the Gehan data by fitting a proportional hazards 
 model. This is the same dataset used as an example in Cox's original paper: 
