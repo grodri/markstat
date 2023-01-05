@@ -19,11 +19,9 @@ supporting files in GitHub, and the published HTML and PDF versions
 on my website.
 
 - [Markstat](https://github.com/grodri/websrc/tree/main/stata)
-- [HTML](https://data.princeton.edu/stata)
-- [PDF](https://data.princeton.edu/stata/tutorial.pdf)
+- [HTML](https://grodri.github.io/stata)
+- [PDF](https://grodri.github.io/stata/tutorial.pdf)
 
-The repository has a separate file for each section of the tutorial,
-but also a combined file called `tutorial.stmd` with all the sections.
 If you are interested in reproducing the output the following notes
 may be of interest.
 
@@ -49,7 +47,7 @@ PDF you also need `tweaks.tex` as discussed below.
 The Input Script
 ----------------
 
-In the source script I used the simple \"one tab or four spaces\" rule
+In the source script I used the simple "one tab or four spaces" rule
 to indent code that should be run through Stata. To list code that is
 not to be run through Stata, for example to explain the syntax of a
 `while` loop, I used code fences as follows:
@@ -112,8 +110,9 @@ decided to add a few more and collect them in a file called
 ---
 title: Stata Tutorial 
 author: Germán Rodríguez
-date: September 2022
-lang: en-GB
+date: November 2022
+geometry: "margin=1.25in"
+fontsize: 11pt
 header-includes:
   - \input{tweaks.tex}
 bibliography: tutorial.bib
@@ -141,12 +140,6 @@ If you list the `tweaks.tex` file you will see that it uses
 These are just aesthetic changes that do not affect the content of the
 tutorial, but allow you to reproduce exactly the published file by
 simply typing `markstat using stataTutorial, pdf bib`.
-
-The `lang` entry in the YAML block is a hack to stop Pandoc/cite-proc
-from moving punctuation inside quotation marks. While this is standard
-American usage, I think it doesn't work well for computing. (For example
-Stata's label for `r(p25)` is "25th percentile", and most definitely
-not "25th percentile,".)
 
 Something else you may toy with when generating a PDF document is page
 breaks. Having looked at the document, however, I decided that the few
