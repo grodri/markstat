@@ -57,8 +57,8 @@ The article introducing `markstat`, written of course using Markdown and
 Stata with `markstat`, updated to use the <u>bib</u>liography option.
 
 <a class="example" href="tutorial">The Stata Tutorial.</a> 
-Back in 2017 I converted the *Stata Tutorial* to a `markstat` script,
-targetting Stata 15. In later years I updated it for Stata 16 and then 17.
+The *Stata Tutorial*, which I converted to `markstat` for Stata version 15 
+in 2017, and updated as new releases came out. Now updated for Stata 18.
 
 <a class="example" href="docx">Dynamic Word Documents.</a> 
 Starting with version 2.0, `markstat` can generate Word documents from the
@@ -91,3 +91,8 @@ work on other output formats.
 Stata 17 introduced a system for producing highly-customizable 
 publication-quality tables. Here we show two examples incorporating 
 such tables in `markstat` documents.
+
+<a class="example" href="appliedStatistics">Applied Statistics.</a>
+The computing logs for my courses on Multilevel Models, Survival 
+Analysis and Demographic Methods have all been redone using `markstat`.
+That's 62 examples using Stata and R.
