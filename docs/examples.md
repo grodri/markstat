@@ -92,7 +92,7 @@ Stata 17 introduced a system for producing highly-customizable
 publication-quality tables. Here we show two examples incorporating 
 such tables in `markstat` documents.
 
-<a class="example" href="appliedStatistics">Applied Statistics.</a>
-The computing logs for my courses on Multilevel Models, Survival 
-Analysis and Demographic Methods have all been redone using `markstat`.
-That's 62 examples using Stata and R.
+<a class="example" href="statistics">Statistics and Population.</a>
+The computing logs for my courses on Generalized Linear Models, Multilevel 
+Models, Survival Analysis and Demographic Methods have all been redone using 
+`markstat`. That's 89 examples using Stata and R.
