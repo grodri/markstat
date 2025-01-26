@@ -30,7 +30,7 @@ and then generate the web page on the left, the PDF document on the
 top right, or the Word document on the bottom right, all from the same
 script! You can view the script [on this page](simpleScript),
 where you will also find links to the resulting web page, PDF file and
-Work document.
+Word document.
 
 </div>
 
