@@ -38,10 +38,10 @@ Word document.
 
 <img src="markstat2slides.png" width="768px" class="img-fluid"/>
 
-The script on the left shows a slide show, which is rendered 
+The script on the left defines a slide show, which is rendered 
 on the right using HTML with the S5 engine at the top 
 (showing the default Spiral and Santiago themes), 
-and using  PDF via Beamer at the bottom 
+and using PDF via Beamer at the bottom 
 (showing the default and Madrid themes).
 You can view the script [on this page](presentations), where you
 will also find links to the presentations.
